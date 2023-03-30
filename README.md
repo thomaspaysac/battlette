@@ -1,2 +1,3 @@
 # Battlette
-## The yummiest battleship game
+
+### The yummiest battleship game
