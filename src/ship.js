@@ -1,5 +1,6 @@
-const Ship = (size) => {
+const Ship = (size, name = 'Unnamed ship', id = undefined) => {
   return {
+    name,
     size,
     hits: 0,
     hit: function() {
@@ -7,7 +8,8 @@ const Ship = (size) => {
     },
     isSunk: function() {
       return (this.hits >= this.size ? true : false);
-    }
+    },
+    id,
   };
 };
 
