@@ -1,10 +1,12 @@
 const Ship = (size) => {
   return {
     size,
-    hitPoints: size,
-    sunk: false,
+    hits: 0,
     hit: function() {
-      this.hitPoints--;
+      this.hits++;
+    },
+    isSunk: function() {
+      return (this.hits >= this.size ? true : false);
     }
   };
 };
