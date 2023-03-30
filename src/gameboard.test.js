@@ -59,7 +59,7 @@ it('should check if a ship is already in place', () => {
   expect(newBoard.isValid(3, [0,0])).toBe(false);
 });
 
-it.skip('should thow an error if a ship overlaps another one', () => {
+it('should thow an error if a ship overlaps another one', () => {
   let newBoard = Gameboard();
   newBoard.placeShip('Carrier', 2, [0,0]);
   expect(() => newBoard.placeShip('Destroyer', 3, [0,1])).toThrow();
