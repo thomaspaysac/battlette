@@ -76,7 +76,7 @@ it('should return error message if trying to attack twice on the same spot', () 
   let newBoard = Gameboard();
   newBoard.placeShip(2, [0,0], 'Carrier');
   newBoard.receiveAttack([0,4]);
-  expect(newBoard.receiveAttack([0,4])).toBe('You cannot attack the same spot twice');
+  expect(() => newBoard.receiveAttack([0,4])).toThrow();
 });
 
 it('should return success message if attacking ship', () => {

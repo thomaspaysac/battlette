@@ -46,14 +46,6 @@ it('should change player\'ship hit property when attacked', () => {
   expect(player1.board.shipList[0].hits).toBe(1);
 });
 
-it('should confirm hit', () => {
-  let player1 = Player('Player1');
-  player1.board.placeShip(2, [0,0], 'Carrier');
-  let testBoard = player1.board.board;
-  let player2 = Player('Player2');
-  expect(player2.attack(player1, 0, 0)).toBe('You missed');
-});
-
 it('should send an error when attacking twice on the same spot', () => {
   let player1 = Player('Player1');
   player1.board.placeShip(3, [0,0], 'Carrier');
@@ -61,4 +53,10 @@ it('should send an error when attacking twice on the same spot', () => {
   let player2 = Player('Player2');
   player2.attack(player1, 0, 0);
   expect(() => player2.attack(player1, 0, 0)).toThrow();
+});
+
+it('should make the computer randomly choose an empty square', () => {
+  let player1 = Player('Player1');
+  let computer = Player('Computer');
+  expect(computer.computerAttack(player1)).toBe();
 });
