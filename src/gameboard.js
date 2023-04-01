@@ -60,8 +60,8 @@ const Gameboard = () => {
      if (this.board[targetPos[0]][targetPos[1]] === undefined) {
       this.board[targetPos[0]][targetPos[1]] = '~';
       return 'You missed';
-     } else if (this.board[targetPos[0]][targetPos[1]] === '~') {
-      return 'You cannot attack the same spot twice';
+     } else if (this.board[targetPos[0]][targetPos[1]] === '~' || this.board[targetPos[0]][targetPos[1]] === 'X') {
+      throw new Error('You cannot attack the same spot twice');
      } else {
       let target = this.shipList.find(el => el.name === this.board[targetPos[0]][targetPos[1]]);
       target.hits++;
