@@ -21,4 +21,12 @@ body {
     #player1-board div[class^="cell"]:hover, #player2-board div[class^="cell"]:hover {
       background-color: grey; }
 
+.battle-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center; }
+  .battle-info .turn-info {
+    font-size: 1.2rem;
+    font-weight: 700; }
+
 /*# sourceMappingURL=style.css.map */

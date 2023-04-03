@@ -6,9 +6,11 @@ const Ship = (size, name = 'Unnamed ship', id = undefined) => {
     hit: function() {
       this.hits++;
     },
+
     isSunk: function() {
       return (this.hits >= this.size ? true : false);
     },
+
     id,
   };
 };
