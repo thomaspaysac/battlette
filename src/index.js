@@ -53,12 +53,13 @@ function InitializeTurn(currentPlayer) {
 }
 
 // Populate player 1 board
-function PopulateP1 () {
+function PopulateP1 (board = 'board') {
+  const targetBoard = player1.gameboard[board];
   player1_board.textContent = '';
   for (let i = 0; i < 10; i++) {
     for (let j = 0; j < 10; j++) {
       let cell = document.createElement('div');
-      cell.textContent = player1.gameboard.board[i][j];
+      cell.textContent = targetBoard[i][j];
       if (cell.textContent === 'X') {
         cell.style.backgroundColor = '#f3bbbb';
       } else if (cell.textContent === '~') {
@@ -100,13 +101,17 @@ function ActivateAttackOn (cellsArr, attacker, defender) {
       if (currentPlayer === 'player1') {
         if (defender.gameboard.board[targetCell[0]][targetCell[1]] === 'X') {
           defender.gameboard.displayBoard[targetCell[0]][targetCell[1]] = 'X';
-
         } else {
           defender.gameboard.displayBoard[targetCell[0]][targetCell[1]] = '~';
         }
         PopulateP2();
         currentPlayer = 'player2';
       } else {
+        if (defender.gameboard.board[targetCell[0]][targetCell[1]] === 'X') {
+          defender.gameboard.displayBoard[targetCell[0]][targetCell[1]] = 'X';
+        } else {
+          defender.gameboard.displayBoard[targetCell[0]][targetCell[1]] = '~';
+        }
         PopulateP1();
         currentPlayer = 'player1';
       }
@@ -136,3 +141,9 @@ player1_log.addEventListener('click', () => {
 player2_log.addEventListener('click', () => {
   console.log(player2.gameboard);
 });
+
+
+// Refactor PopulateP2 pour suivre la même modalité que PopulateP1
+// Player vs COM : utiliser seulement PopulateP1('board') et PopulateP2('displayBoard')
+// PvP : alterner 'board' (joueur en cours) et 'displayBoard' (joueur adverse)
+// -> utiliser 'displayBoard' affiche le brouillard de guerre, 'board' affiche la position des navires
