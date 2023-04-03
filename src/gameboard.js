@@ -16,6 +16,19 @@ const Gameboard = () => {
       [,,,,,,,,,],
     ],
 
+    displayBoard: [
+      [,,,,,,,,,],
+      [,,,,,,,,,],
+      [,,,,,,,,,],
+      [,,,,,,,,,],
+      [,,,,,,,,,],
+      [,,,,,,,,,],
+      [,,,,,,,,,],
+      [,,,,,,,,,],
+      [,,,,,,,,,],
+      [,,,,,,,,,],
+    ],
+    
     shipList: [],
 
     placeShip: function (size, startPos, shipName = 'Unnamed ship', direction = 'hor') {

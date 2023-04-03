@@ -20,13 +20,13 @@ const turn_info = document.querySelector('.turn-info');
 
 // Initialize game
 function InitializeGame() {
-  player1 = Player();
+  player1 = Player('Thomas');
   player1.gameboard.placeShip(5, [1,0], 'Carrier');
   player1.gameboard.placeShip(4, [3,4], 'Battleship');
   player1.gameboard.placeShip(3, [5,7], 'Cruiser', 'ver');
   player1.gameboard.placeShip(3, [7,3], 'Submarine', 'ver');
   player1.gameboard.placeShip(2, [3,2], 'Destroyer', 'ver');
-  player2 = Player();
+  player2 = Player('Computer');
   player2.gameboard.placeShip(5, [1,0], 'Carrier');
   player2.gameboard.placeShip(4, [3,4], 'Battleship');
   player2.gameboard.placeShip(3, [5,7], 'Cruiser', 'ver');
@@ -46,10 +46,8 @@ function InitializeTurn(currentPlayer) {
   p1Cells = PopulateP1();
   p2Cells = PopulateP2();
   if (currentPlayer === 'player1') {
-    console.log('Player 1 turn');
     ActivateAttackOn(p2Cells, player1, player2);
   } else {
-    console.log('Player 2 turn');
     ActivateAttackOn(p1Cells, player2, player1);
   }
 }
@@ -61,6 +59,11 @@ function PopulateP1 () {
     for (let j = 0; j < 10; j++) {
       let cell = document.createElement('div');
       cell.textContent = player1.gameboard.board[i][j];
+      if (cell.textContent === 'X') {
+        cell.style.backgroundColor = '#f3bbbb';
+      } else if (cell.textContent === '~') {
+        cell.style.backgroundColor = '#d1d3ef';
+      }
       cell.className = `cell1 ${i}${j}`;
       player1_board.appendChild(cell);
     }  
@@ -68,13 +71,18 @@ function PopulateP1 () {
   return document.querySelectorAll('.cell1');
 }
 
-// Populate player 2 board
+// Populate player 2 (computer) board, using the displayBoard key to keep undiscovered squares empty
 function PopulateP2 () {
   player2_board.textContent = '';
   for (let i = 0; i < 10; i++) {
     for (let j = 0; j < 10; j++) {
       let cell = document.createElement('div');
-      cell.textContent = player2.gameboard.board[i][j];
+      cell.textContent = player2.gameboard.displayBoard[i][j];
+      if (cell.textContent === 'X') {
+        cell.style.backgroundColor = '#f3bbbb';
+      } else if (cell.textContent === '~') {
+        cell.style.backgroundColor = '#d1d3ef';
+      }
       cell.className = `cell2 ${i}${j}`;
       player2_board.appendChild(cell);
     }  
@@ -88,21 +96,36 @@ function ActivateAttackOn (cellsArr, attacker, defender) {
     el.addEventListener('click', (e) => {
       const targetCell = (el.className.slice(-2)).split('');
       attacker.attack(defender, targetCell[0], targetCell[1]);
+      // Reveal square when attacked
       if (currentPlayer === 'player1') {
+        if (defender.gameboard.board[targetCell[0]][targetCell[1]] === 'X') {
+          defender.gameboard.displayBoard[targetCell[0]][targetCell[1]] = 'X';
+
+        } else {
+          defender.gameboard.displayBoard[targetCell[0]][targetCell[1]] = '~';
+        }
         PopulateP2();
         currentPlayer = 'player2';
       } else {
         PopulateP1();
         currentPlayer = 'player1';
       }
+      winCheck();
       InitializeTurn(currentPlayer);
     });
   });
 }
 
+// Check win condition
+function winCheck () {
+  if (player1.gameboard.shipList.every(el => el.isSunk()) || player2.gameboard.shipList.every(el => el.isSunk())) {
+    console.log('Game Over');
+  }
+}
+
 // Display controller
 function UpdateInfoDisplay () {
-  turn_info.textContent = `${currentPlayer}'s turn`;
+  turn_info.textContent = currentPlayer === 'player1' ? `${player1.playerName}'s turn` : `${player2.playerName}'s turn`;
 }
 
 // Test buttons
@@ -113,24 +136,3 @@ player1_log.addEventListener('click', () => {
 player2_log.addEventListener('click', () => {
   console.log(player2.gameboard);
 });
-
-
-
-// A chaque début de tour : 
-// Changer joueur actif
-// Réactiver attack sur la grille de l'autre joueur
-
-// A chaque attack :
-// Lancer la fonction d'attaque
-// Mettre à jour la grille touchée
-// Réinitialiser le tour
-
-// Liste des navires :
-// Carrier 5
-// Battleship 4
-// Cruiser 3
-// Submarine 3
-// Destroyer 2
-
-// A faire :
-// Brouillard de guerre (les cases non explorées sont vides) -> ajouter une classe CSS non-explorée ?
