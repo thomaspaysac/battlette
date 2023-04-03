@@ -11,7 +11,7 @@ const Player = (name) => {
     },
 
     computerAttack: function (player) {
-      let coord = findValidMove(player.gameboard.board);
+      let coord = findValidMove(player.gameboard.privateBoard);
       this.attack(player, coord[0], coord[1]);
     },
 
@@ -20,8 +20,8 @@ const Player = (name) => {
 };
 
 function rndCoordinates () {
-  let x = Math.floor(Math.random() * 9);
-  let y = Math.floor(Math.random() * 9);
+  let x = Math.floor(Math.random() * 10);
+  let y = Math.floor(Math.random() * 10);
   return [[x],[y]];
 }
 

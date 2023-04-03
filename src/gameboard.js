@@ -3,7 +3,7 @@ import { Ship } from './ship.js';
 
 const Gameboard = () => {
   return {
-    board: [
+    privateBoard: [
       [,,,,,,,,,],
       [,,,,,,,,,],
       [,,,,,,,,,],
@@ -16,7 +16,7 @@ const Gameboard = () => {
       [,,,,,,,,,],
     ],
 
-    displayBoard: [
+    publicBoard: [
       [,,,,,,,,,],
       [,,,,,,,,,],
       [,,,,,,,,,],
@@ -39,11 +39,11 @@ const Gameboard = () => {
         this.shipList.push(newShip);
         if (direction === 'hor') {
           for (let i = 0; i < size; i++) {
-            this.board[startPos[0]][startPos[1] + i] = shipName;
+            this.privateBoard[startPos[0]][startPos[1] + i] = shipName;
           }
         } else if (direction === 'ver') {
           for (let i = 0; i < size; i++) {
-            this.board[startPos[0] + i][startPos[1]] = shipName;
+            this.privateBoard[startPos[0] + i][startPos[1]] = shipName;
           }
         }
       }
@@ -58,11 +58,11 @@ const Gameboard = () => {
       let targetArr = [];
       if (direction === 'hor') {
         for (let i = 0; i < size; i++) { // check if horizontal placement is empty
-          targetArr.push(this.board[startPos[0]][startPos[1] + i]);
+          targetArr.push(this.privateBoard[startPos[0]][startPos[1] + i]);
           }
       } else {
         for (let i = 0; i < size; i++) {
-          targetArr.push(this.board[startPos[0] + i][startPos[1]]);
+          targetArr.push(this.privateBoard[startPos[0] + i][startPos[1]]);
         }
       }
       availableCheck = targetArr.every(el => el === undefined);
@@ -70,15 +70,15 @@ const Gameboard = () => {
       },
 
     receiveAttack: function (targetPos) {
-     if (this.board[targetPos[0]][targetPos[1]] === undefined) {
-      this.board[targetPos[0]][targetPos[1]] = '~';
+     if (this.privateBoard[targetPos[0]][targetPos[1]] === undefined) {
+      this.privateBoard[targetPos[0]][targetPos[1]] = '~';
       return 'You missed';
-     } else if (this.board[targetPos[0]][targetPos[1]] === '~' || this.board[targetPos[0]][targetPos[1]] === 'X') {
+     } else if (this.privateBoard[targetPos[0]][targetPos[1]] === '~' || this.privateBoard[targetPos[0]][targetPos[1]] === 'X') {
       throw new Error('You cannot attack the same spot twice');
      } else {
-      let target = this.shipList.find(el => el.name === this.board[targetPos[0]][targetPos[1]]);
+      let target = this.shipList.find(el => el.name === this.privateBoard[targetPos[0]][targetPos[1]]);
       target.hits++;
-      this.board[targetPos[0]][targetPos[1]] = 'X';
+      this.privateBoard[targetPos[0]][targetPos[1]] = 'X';
       if (target.isSunk()) {
         return 'The ship has sunk';
       } else {
@@ -88,25 +88,7 @@ const Gameboard = () => {
     },
 
     getStatus: function() {
-      const condensedBoard = [];
-      const statusBoard = [];
-      for (let i = 0; i < this.board.length; i++) {
-        for (let j = 0; j < this.board[i].length; j++) {
-          condensedBoard.push(this.board[i][j]);
-        }
-      }
-      for (let i = 0; i < condensedBoard.length; i++) {
-        if (condensedBoard[i] === 'X' || condensedBoard[i] === '~' || condensedBoard[i] === undefined) {
-          statusBoard.push(true);
-        } else {
-          statusBoard.push(false);
-        }
-      }
-      if (statusBoard.every(el => el === true)) {
-        return 'All ships destroyed';
-      } else {
-        return 'There are still ships on the board';
-      }
+      return this.shipList.every(el => el.isSunk());
     },
 
   };

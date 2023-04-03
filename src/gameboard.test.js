@@ -3,7 +3,7 @@ import { Gameboard } from "./gameboard";
 
 it('should generate an empty starting board', () => {
   let newBoard = Gameboard();
-  expect(newBoard.board).toEqual(
+  expect(newBoard.privateBoard).toEqual(
     [ [, , , , , , , , ], 
       [, , , , , , , , ], 
       [, , , , , , , , ], 
@@ -19,7 +19,7 @@ it('should generate an empty starting board', () => {
 it('should place a ship from its starting coordinates', () => {
   let newBoard = Gameboard();
   newBoard.placeShip(3, [0,0], 'Destroyer');
-  expect(newBoard.board).toEqual(
+  expect(newBoard.privateBoard).toEqual(
     [ ['Destroyer', 'Destroyer', 'Destroyer', , , , , , ], 
       [, , , , , , , , ], 
       [, , , , , , , , ], 
@@ -35,7 +35,7 @@ it('should place a ship from its starting coordinates', () => {
 it('should place a ship in the vertical orientation', () => {
   let newBoard = Gameboard();
   newBoard.placeShip(3, [0,0], 'Destroyer', 'ver');
-  expect(newBoard.board).toEqual(
+  expect(newBoard.privateBoard).toEqual(
     [ ['Destroyer', , , , , , , , ], 
       ['Destroyer', , , , , , , , ], 
       ['Destroyer', , , , , , , , ], 

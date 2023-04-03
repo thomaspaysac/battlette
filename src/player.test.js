@@ -17,10 +17,10 @@ it('should create a boardgame for the player', () => {
 it('should be able to place ships on a player board', () => {
   let player1 = Player('Player 1');
   player1.gameboard.placeShip(2, [0,0], 'Carrier');
-  let playerBoard = player1.gameboard.board;
+  let playerBoard = player1.gameboard.privateBoard;
   let testBoard = Gameboard();
   testBoard.placeShip(2, [0,0], 'Carrier');
-  expect(playerBoard).toEqual(testBoard.board);
+  expect(playerBoard).toEqual(testBoard.privateBoard);
 });
 
 it('should access player\'s ships', () => {
@@ -32,7 +32,7 @@ it('should access player\'s ships', () => {
 it('should attack the other player\'s board', () => {
   let player1 = Player('Player1');
   player1.gameboard.placeShip(2, [0,0], 'Carrier');
-  let testBoard = player1.gameboard.board;
+  let testBoard = player1.gameboard.privateBoard;
   let player2 = Player('Player2');
   player2.attack(player1, 0, 0);
   expect(testBoard[0][0]).toBe('X');
@@ -49,7 +49,7 @@ it('should change player\'ship hit property when attacked', () => {
 it('should send an error when attacking twice on the same spot', () => {
   let player1 = Player('Player1');
   player1.gameboard.placeShip(3, [0,0], 'Carrier');
-  let testBoard = player1.gameboard.board;
+  let testBoard = player1.gameboard.privateBoard;
   let player2 = Player('Player2');
   player2.attack(player1, 0, 0);
   expect(() => player2.attack(player1, 0, 0)).toThrow();

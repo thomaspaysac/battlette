@@ -48,12 +48,13 @@ function InitializeTurn(currentPlayer) {
   if (currentPlayer === 'player1') {
     ActivateAttackOn(p2Cells, player1, player2);
   } else {
-    ActivateAttackOn(p1Cells, player2, player1);
+    computerAttack();
+    //ActivateAttackOn(p1Cells, player2, player1);
   }
 }
 
 // Populate player 1 board
-function PopulateP1 (board = 'board') {
+function PopulateP1 (board = 'privateBoard') {
   const targetBoard = player1.gameboard[board];
   player1_board.textContent = '';
   for (let i = 0; i < 10; i++) {
@@ -64,6 +65,9 @@ function PopulateP1 (board = 'board') {
         cell.style.backgroundColor = '#f3bbbb';
       } else if (cell.textContent === '~') {
         cell.style.backgroundColor = '#d1d3ef';
+      } else if (cell.textContent) {
+        cell.textContent = 'O';
+        cell.style.backgroundColor = '#c7e6d0';
       }
       cell.className = `cell1 ${i}${j}`;
       player1_board.appendChild(cell);
@@ -72,13 +76,14 @@ function PopulateP1 (board = 'board') {
   return document.querySelectorAll('.cell1');
 }
 
-// Populate player 2 (computer) board, using the displayBoard key to keep undiscovered squares empty
-function PopulateP2 () {
+// Populate player 2 (computer) board, using the publicBoard key to keep undiscovered squares empty
+function PopulateP2 (board = 'publicBoard') {
+  const targetBoard = player2.gameboard[board];
   player2_board.textContent = '';
   for (let i = 0; i < 10; i++) {
     for (let j = 0; j < 10; j++) {
       let cell = document.createElement('div');
-      cell.textContent = player2.gameboard.displayBoard[i][j];
+      cell.textContent = targetBoard[i][j];
       if (cell.textContent === 'X') {
         cell.style.backgroundColor = '#f3bbbb';
       } else if (cell.textContent === '~') {
@@ -91,7 +96,7 @@ function PopulateP2 () {
   return document.querySelectorAll('.cell2');
 }
 
-// Activate attack on one player board at a time
+// Activate attack on one player board at a time, works for PVP
 function ActivateAttackOn (cellsArr, attacker, defender) {
   cellsArr.forEach(el => {
     el.addEventListener('click', (e) => {
@@ -99,18 +104,18 @@ function ActivateAttackOn (cellsArr, attacker, defender) {
       attacker.attack(defender, targetCell[0], targetCell[1]);
       // Reveal square when attacked
       if (currentPlayer === 'player1') {
-        if (defender.gameboard.board[targetCell[0]][targetCell[1]] === 'X') {
-          defender.gameboard.displayBoard[targetCell[0]][targetCell[1]] = 'X';
+        if (defender.gameboard.privateBoard[targetCell[0]][targetCell[1]] === 'X') {
+          defender.gameboard.publicBoard[targetCell[0]][targetCell[1]] = 'X';
         } else {
-          defender.gameboard.displayBoard[targetCell[0]][targetCell[1]] = '~';
+          defender.gameboard.publicBoard[targetCell[0]][targetCell[1]] = '~';
         }
         PopulateP2();
         currentPlayer = 'player2';
       } else {
-        if (defender.gameboard.board[targetCell[0]][targetCell[1]] === 'X') {
-          defender.gameboard.displayBoard[targetCell[0]][targetCell[1]] = 'X';
+        if (defender.gameboard.privateBoard[targetCell[0]][targetCell[1]] === 'X') {
+          defender.gameboard.publicBoard[targetCell[0]][targetCell[1]] = 'X';
         } else {
-          defender.gameboard.displayBoard[targetCell[0]][targetCell[1]] = '~';
+          defender.gameboard.publicBoard[targetCell[0]][targetCell[1]] = '~';
         }
         PopulateP1();
         currentPlayer = 'player1';
@@ -121,10 +126,18 @@ function ActivateAttackOn (cellsArr, attacker, defender) {
   });
 }
 
+// Computer attack
+function computerAttack () {
+  player2.computerAttack(player1);
+  winCheck();
+  currentPlayer = 'player1';
+  InitializeTurn(currentPlayer);
+}
+
 // Check win condition
 function winCheck () {
-  if (player1.gameboard.shipList.every(el => el.isSunk()) || player2.gameboard.shipList.every(el => el.isSunk())) {
-    console.log('Game Over');
+  if (player1.gameboard.getStatus() || player2.gameboard.getStatus()) {
+    console.log('Game over');
   }
 }
 
@@ -143,7 +156,8 @@ player2_log.addEventListener('click', () => {
 });
 
 
-// Refactor PopulateP2 pour suivre la même modalité que PopulateP1
-// Player vs COM : utiliser seulement PopulateP1('board') et PopulateP2('displayBoard')
-// PvP : alterner 'board' (joueur en cours) et 'displayBoard' (joueur adverse)
-// -> utiliser 'displayBoard' affiche le brouillard de guerre, 'board' affiche la position des navires
+//A FAIRE
+// Ajouter écran de game over
+// Placement des navires
+// PvP : alterner 'privateBoard' (joueur en cours) et 'publicBoard' (joueur adverse)
+  // -> utiliser 'publicBoard' affiche le brouillard de guerre, 'privateBoard' affiche la position des navires

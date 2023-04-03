@@ -22,7 +22,8 @@ body {
     vertical-align: middle;
     font-size: 2rem; }
     #player1-board div[class^="cell"]:hover, #player2-board div[class^="cell"]:hover {
-      background-color: grey; }
+      background-color: grey;
+      cursor: pointer; }
 
 .battle-info {
   display: flex;
