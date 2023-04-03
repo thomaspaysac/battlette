@@ -4,14 +4,14 @@ const Player = (name) => {
   return {
     playerName: name,
 
-    board: Gameboard(),
+    gameboard: Gameboard(),
 
     attack: function (player, x, y) {
-      player.board.receiveAttack([x, y]);
+      player.gameboard.receiveAttack([x, y]);
     },
 
     computerAttack: function (player) {
-      let coord = findValidMove(player.board.board);
+      let coord = findValidMove(player.gameboard.board);
       this.attack(player, coord[0], coord[1]);
     },
 

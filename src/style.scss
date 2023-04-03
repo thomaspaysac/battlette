@@ -1,0 +1,30 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+.battlefield {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+#player1-board, #player2-board {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  grid-template-rows: repeat(10, 1fr);
+
+  div[class^="cell"]  {
+    height: 40px;
+    width: 40px;
+    border: 1px solid black;
+    background-color: lightgray;
+
+    &:hover {
+      background-color: grey;
+    }
+  }
+}
