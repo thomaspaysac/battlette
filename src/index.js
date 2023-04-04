@@ -21,25 +21,57 @@ const turn_info = document.querySelector('.turn-info');
 // Initialize game
 function InitializeGame() {
   player1 = Player('Thomas');
-  player1.gameboard.placeShip(5, [1,0], 'Carrier');
+  /*player1.gameboard.placeShip(5, [1,0], 'Carrier');
   player1.gameboard.placeShip(4, [3,4], 'Battleship');
   player1.gameboard.placeShip(3, [5,7], 'Cruiser', 'ver');
   player1.gameboard.placeShip(3, [7,3], 'Submarine', 'ver');
-  player1.gameboard.placeShip(2, [3,2], 'Destroyer', 'ver');
+  player1.gameboard.placeShip(2, [3,2], 'Destroyer', 'ver');*/
   player2 = Player('Computer');
-  player2.gameboard.placeShip(5, [1,0], 'Carrier');
+  /*player2.gameboard.placeShip(5, [1,0], 'Carrier');
   player2.gameboard.placeShip(4, [3,4], 'Battleship');
   player2.gameboard.placeShip(3, [5,7], 'Cruiser', 'ver');
   player2.gameboard.placeShip(3, [7,3], 'Submarine', 'ver');
-  player2.gameboard.placeShip(2, [3,2], 'Destroyer', 'ver');
-  /*p1Cells = PopulateP1();
-  p2Cells = PopulateP2();*/
+  player2.gameboard.placeShip(2, [3,2], 'Destroyer', 'ver');*/
+  p1Cells = PopulateP1();
+  p2Cells = PopulateP2();
 }
 
 new_game_button.addEventListener('click', () => {
   InitializeGame();
-  InitializeTurn(currentPlayer);
+  ActivatePlacement(player1, p1Cells, 5, 'Carrier');
+  //p1Cells = PopulateP1();
+
+  //InitializeTurn(currentPlayer);
 });
+
+// Allow user to place ships by clicking the starting square
+function PlaceShips () {
+  console.log('Place the 5 ship');
+
+}
+
+// Activate click on own board to place ships
+function ActivatePlacement (player, cellsArr, size, shipName) {
+  cellsArr.forEach(el => {
+    /*for (let i = 0; i < size; i++) {
+      const hovered = document.querySelector('.cell1 )
+    }*/
+    el.addEventListener('mouseover', (e) => {
+      for (let i = 1; i < size; i++) {
+        const hoveredCell = el.className;
+        const startingCell = el.className.slice(0,-1);
+        const coloredCell = document.getElementsByClassName(`${startingCell}${i}`)[0];
+        coloredCell.classList.add('placing-ship-cell');
+      }
+    });
+    el.addEventListener('click', (e) => {
+      const targetCell = (el.className.slice(6, 8)).split('');
+      const targetCoordinates = [+targetCell[0], +targetCell[1]];
+      player.gameboard.placeShip(size, targetCoordinates, shipName);
+      p1Cells = PopulateP1();
+    });
+  });
+}
 
 function InitializeTurn(currentPlayer) {
   UpdateInfoDisplay();
