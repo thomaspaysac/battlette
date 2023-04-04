@@ -52,7 +52,8 @@ const Gameboard = () => {
     isValid: function (size, startPos, direction = 'hor') {
       let sizeCheck = true;
       let availableCheck = true;
-      if ((startPos[1] + size - 1) > 9 || (startPos[0] + size - 1) > 9) {
+      if (direction === 'hor' && (startPos[1] + size - 1) > 9 ||
+      direction === 'ver' && (startPos[0] + size - 1) > 9) {
         sizeCheck = false;
       }
       let targetArr = [];
