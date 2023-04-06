@@ -62,8 +62,9 @@ it('should check if a ship is already in place', () => {
 
 it('should thow an error if a ship overlaps another one', () => {
   let newBoard = Gameboard();
-  newBoard.placeShip(2, [0,0], 'Carrier');
-  expect(() => newBoard.placeShip(3, [0,1], 'Destroyer')).toThrow();
+  newBoard.placeShip(2, [1,0], 'Carrier');
+  //expect(() => newBoard.placeShip(3, [0,1], 'Destroyer', 'ver')).toThrow();
+  expect(newBoard.isValid(3, [1,1])).toBe(false);
 });
 
 it('should return miss message if attacking an empty square', () => {

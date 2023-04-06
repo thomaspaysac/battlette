@@ -4,16 +4,16 @@ import { Ship } from './ship.js';
 const Gameboard = () => {
   return {
     privateBoard: [
-      [,,,,,,,,,],
-      [,,,,,,,,,],
-      [,,,,,,,,,],
-      [,,,,,,,,,],
-      [,,,,,,,,,],
-      [,,,,,,,,,],
-      [,,,,,,,,,],
-      [,,,,,,,,,],
-      [,,,,,,,,,],
-      [,,,,,,,,,],
+      [undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined],
+      [undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined],
+      [undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined],
+      [undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined],
+      [undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined],
+      [undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined],
+      [undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined],
+      [undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined],
+      [undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined],
+      [undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined],
     ],
 
     publicBoard: [
@@ -32,7 +32,7 @@ const Gameboard = () => {
     shipList: [],
 
     placeShip: function (size, startPos, shipName = 'Unnamed ship', direction = 'hor') {
-      if (!this.isValid(size, startPos)) {
+      if (!this.isValid(size, startPos, direction)) {
         throw new Error('Cannot place ship: out of bounds or space already occupied.');
       } else {
         let newShip = Ship(size, shipName);
@@ -52,12 +52,13 @@ const Gameboard = () => {
     isValid: function (size, startPos, direction = 'hor') {
       let sizeCheck = true;
       let availableCheck = true;
-      if (direction === 'hor' && ((startPos[1] + size - 1) > 9) ||
-      direction === 'ver' && ((startPos[0] + size - 1) > 9)) {
+      if (direction === 'hor' && ((startPos[1] + size - 1) > 9)) {
+        sizeCheck = false;
+      } else if (direction === 'ver' && ((startPos[0] + size - 1) > 9)) {
         sizeCheck = false;
       }
       let targetArr = [];
-      if (sizeCheck === true && direction === 'hor') {
+      if (direction === 'hor') {
         for (let i = 0; i < size; i++) { // check if horizontal placement is empty
           targetArr.push(this.privateBoard[startPos[0]][startPos[1] + i]);
           }
@@ -67,6 +68,7 @@ const Gameboard = () => {
         }
       }
       availableCheck = targetArr.every(el => el === undefined);
+      //console.log({sizeCheck, availableCheck});
       return (sizeCheck && availableCheck);
       },
 

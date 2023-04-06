@@ -34,6 +34,7 @@ start_game_button.addEventListener('click', () => StartGame());
 
 function InitializeGame() {
   player1 = Player('Thomas');
+  player1.gameboard.placeShip(5, [8,0], 'Carrier');
   player2 = Player('Computer');
   /*player2.gameboard.placeShip(5, [1,0], 'Carrier');
   player2.gameboard.placeShip(4, [3,4], 'Battleship');
@@ -52,15 +53,13 @@ function placementPhase () {
   const p1Destroyer = document.getElementById('p1-destroyer');
   p1Carrier.addEventListener('click', () => ActivatePlacement(player1, p1Cells, 5, 'Carrier'));
   p1Battleship.addEventListener('click', () => ActivatePlacement(player1, p1Cells, 4, 'Battleship'));
-  p1Cruiser.addEventListener('click', () => ActivatePlacement(player1, p1Cells, 3, 'Cruiser'));
+  p1Cruiser.addEventListener('click', () => ActivatePlacement(player1, p1Cells, 3, 'Cruiser', 'ver'));
   p1Submarine.addEventListener('click', () => ActivatePlacement(player1, p1Cells, 3, 'Submarine'));
   p1Destroyer.addEventListener('click', () => ActivatePlacement(player1, p1Cells, 2, 'Destroyer'));
 }
 
 // Activate click on own board to place ships
 function ActivatePlacement (player, cellsArr, size, shipName, orientation = 'hor') {
-  cellsArr.forEach(el => el.classList.remove('placing-error'));
-  cellsArr.forEach(el => el.classList.remove('placing-ship-cell'));
   // Check if the ship has already been placed, if yes then the function returns an error
   let placedShip = player.gameboard.shipList.find(el => el.name === shipName);
   if (placedShip) {
@@ -271,7 +270,6 @@ player2_log.addEventListener('click', () => {
 // ROADMAP
 // Horizontal/vertical toggle
 // Faire placement aléatoire des navires COM
-// FIX VERTICAL PLACEMENT (bug dans les conditions de validité du placement vertical)
 // Prendre coordonnées au hasard, check isValid(), si oui PlaceShip sinon recommencer, lorsqu'un navire est placé recommencer avec le suivant. Ajouter hor/ver aléatoire (0/1)
 // Ajouter écran de game over
 
