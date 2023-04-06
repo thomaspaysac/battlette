@@ -34,7 +34,6 @@ start_game_button.addEventListener('click', () => StartGame());
 
 function InitializeGame() {
   player1 = Player('Thomas');
-  player1.gameboard.placeShip(5, [8,0], 'Carrier');
   player2 = Player('Computer');
   /*player2.gameboard.placeShip(5, [1,0], 'Carrier');
   player2.gameboard.placeShip(4, [3,4], 'Battleship');
@@ -270,7 +269,8 @@ player2_log.addEventListener('click', () => {
 // ROADMAP
 // Horizontal/vertical toggle
 // Faire placement aléatoire des navires COM
-// Prendre coordonnées au hasard, check isValid(), si oui PlaceShip sinon recommencer, lorsqu'un navire est placé recommencer avec le suivant. Ajouter hor/ver aléatoire (0/1)
+  // -> Prendre coordonnées au hasard, check isValid(), si oui PlaceShip sinon recommencer, lorsqu'un navire est placé recommencer avec le suivant. Ajouter hor/ver aléatoire (0/1)
+// Fix bug d'affichage lorsqu'on clique sur un autre navire avant sans avoir cliqué au préalable pour placer le premier
 // Ajouter écran de game over
 
 // PvP : alterner 'privateBoard' (joueur en cours) et 'publicBoard' (joueur adverse)
