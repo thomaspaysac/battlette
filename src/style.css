@@ -9,10 +9,23 @@ body {
   justify-content: space-around;
   align-items: center; }
 
+#player1-ships li {
+  margin: 8px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px; }
+#player1-ships img {
+  height: 1rem; }
+
 #player1-board, #player2-board {
   display: grid;
   grid-template-columns: repeat(10, 1fr);
   grid-template-rows: repeat(10, 1fr); }
+  #player1-board .empty-cell, #player2-board .empty-cell {
+    height: 40px;
+    width: 40px;
+    border: 1px solid rgba(0, 0, 0, 0.445);
+    background-color: rgba(212, 212, 212, 0.3); }
 
 [class^="cell"] {
   height: 40px;
