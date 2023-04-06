@@ -243,9 +243,11 @@ player2_log.addEventListener('click', () => {
 });
 
 
-//A FAIRE
+// ROADMAP
+// Player vs COM
+// Ajouter isPlaying aux players pour remplacer current player
+// Faire placement aléatoire des navires COM
 // Ajouter écran de game over
-// Placement des navires : placement vertical
-// Ajouter isPlaying aux players
+
 // PvP : alterner 'privateBoard' (joueur en cours) et 'publicBoard' (joueur adverse)
   // -> utiliser 'publicBoard' affiche le brouillard de guerre, 'privateBoard' affiche la position des navires
