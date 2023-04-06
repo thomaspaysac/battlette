@@ -76,7 +76,13 @@ function ActivatePlacement (player, cellsArr, size, shipName) {
           cellsArr.forEach(el => el.classList.remove('placing-ship-cell'));
         });
       } else {
-        console.log('error');
+        for (let i = +startingX; i < 10; i++) {
+          const coloredCell = document.getElementsByClassName(`${startingY}${i}`)[0];
+          coloredCell.classList.add('placing-error');
+        }
+        el.addEventListener('mouseout', (e) => {
+          cellsArr.forEach(el => el.classList.remove('placing-error'));
+        });
       }
     });
 
