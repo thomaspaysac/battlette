@@ -34,7 +34,19 @@ body {
 }
 
 .placing-ship-cell {
-  background-color: yellow;
+  background-color: rgba(255, 255, 0, 0.334);
+
+  &:hover {
+    background-color: rgba(255, 255, 0, 0.334);
+  }
+}
+
+.placing-error {
+  background-color: rgba(255, 0, 0, 0.423);
+
+  &:hover {
+    background-color: rgba(255, 0, 0, 0.423);
+  }
 }
 
 .battle-info {

@@ -42,7 +42,7 @@ function InitializeGame() {
   p2Cells = PopulateP2();
 }
 
-new_game_button.addEventListener('click', async () => {
+new_game_button.addEventListener('click', () => {
   InitializeGame();
   p1Carrier.addEventListener('click', () => ActivatePlacement(player1, p1Cells, 5, 'Carrier'));
   p1Battleship.addEventListener('click', () => ActivatePlacement(player1, p1Cells, 4, 'Battleship'));
@@ -60,23 +60,25 @@ function ActivatePlacement (player, cellsArr, size, shipName) {
   let placedShip = player.gameboard.shipList.find(el => el.name === shipName);
   if (placedShip) {
     throw new Error('This ship is already in place.');
+
   } else {
   cellsArr.forEach(el => {
-    
-    // Display ship size overlay
-    /*el.addEventListener('mouseover', (e) => {
-      const startingY = el.className.slice(0,-1);
-      const startingX = el.className.slice(-1);
-      for (let i = startingX; i < (startingX + size -1); i++) {  
-        const coloredCell = document.getElementsByClassName(`${startingY}${i}`)[0];
-        coloredCell.classList.add('placing-ship-cell');
+    // Display ship size overlay on hover
+    el.addEventListener('mouseover', (e) => {    
+      const startingY = el.className.slice(0,7);
+      const startingX = el.className.slice(7,8);
+      if (player.gameboard.isValid(size, [+startingY.slice(-1), +startingX])) {
+        for (let i = +startingX; i < (+startingX + size); i++) {
+          const coloredCell = document.getElementsByClassName(`${startingY}${i}`)[0];
+          coloredCell.classList.add('placing-ship-cell');
+        }
+        el.addEventListener('mouseout', (e) => {
+          cellsArr.forEach(el => el.classList.remove('placing-ship-cell'));
+        });
+      } else {
+        console.log('error');
       }
     });
-
-    // Remove overlay
-    el.addEventListener('mouseout', (e) => {
-      el.classList.remove('placing-ship-cell');
-    });*/
 
     // Place ship when clicking
     el.addEventListener('click', (e) => {
@@ -214,6 +216,7 @@ player2_log.addEventListener('click', () => {
 
 //A FAIRE
 // Ajouter écran de game over
-// Placement des navires
+// Placement des navires : placement vertical
+// Ajouter isPlaying aux players
 // PvP : alterner 'privateBoard' (joueur en cours) et 'publicBoard' (joueur adverse)
   // -> utiliser 'publicBoard' affiche le brouillard de guerre, 'privateBoard' affiche la position des navires
