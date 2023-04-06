@@ -52,16 +52,16 @@ const Gameboard = () => {
     isValid: function (size, startPos, direction = 'hor') {
       let sizeCheck = true;
       let availableCheck = true;
-      if (direction === 'hor' && (startPos[1] + size - 1) > 9 ||
-      direction === 'ver' && (startPos[0] + size - 1) > 9) {
+      if (direction === 'hor' && ((startPos[1] + size - 1) > 9) ||
+      direction === 'ver' && ((startPos[0] + size - 1) > 9)) {
         sizeCheck = false;
       }
       let targetArr = [];
-      if (direction === 'hor') {
+      if (sizeCheck === true && direction === 'hor') {
         for (let i = 0; i < size; i++) { // check if horizontal placement is empty
           targetArr.push(this.privateBoard[startPos[0]][startPos[1] + i]);
           }
-      } else {
+      } else if (sizeCheck === true && direction === 'ver') {
         for (let i = 0; i < size; i++) {
           targetArr.push(this.privateBoard[startPos[0] + i][startPos[1]]);
         }

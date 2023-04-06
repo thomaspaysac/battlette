@@ -51,7 +51,7 @@ it('should place a ship in the vertical orientation', () => {
 
 it('should throw an error if the ship goes out of bounds', () => {
   let newBoard = Gameboard();
-  expect(newBoard.isValid(3, [0,8])).toBe(false);
+  expect(newBoard.isValid(3, [8,8], 'ver')).toBe(false);
 });
 
 it('should check if a ship is already in place', () => {
@@ -96,7 +96,7 @@ it('should return the correct board status: ships left', () => {
   let newBoard = Gameboard();
   newBoard.placeShip(2, [0,0], 'Carrier');
   newBoard.receiveAttack([0,0]);
-  expect(newBoard.getStatus()).toBe('There are still ships on the board');
+  expect(newBoard.getStatus()).toBe(false);
 });
 
 it('should return correct board status: no more ships', () => {
@@ -104,5 +104,5 @@ it('should return correct board status: no more ships', () => {
   newBoard.placeShip(2, [0,0], 'Carrier');
   newBoard.receiveAttack([0,0]);
   newBoard.receiveAttack([0,1]);
-  expect(newBoard.getStatus()).toBe('All ships destroyed');
+  expect(newBoard.getStatus()).toBe(true);
 });
