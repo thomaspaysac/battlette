@@ -4,16 +4,16 @@ import { Ship } from './ship.js';
 const Gameboard = () => {
   return {
     privateBoard: [
-      [undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined],
-      [undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined],
-      [undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined],
-      [undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined],
-      [undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined],
-      [undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined],
-      [undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined],
-      [undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined],
-      [undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined],
-      [undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined],
+      [,,,,,,,,,],
+      [,,,,,,,,,],
+      [,,,,,,,,,],
+      [,,,,,,,,,],
+      [,,,,,,,,,],
+      [,,,,,,,,,],
+      [,,,,,,,,,],
+      [,,,,,,,,,],
+      [,,,,,,,,,],
+      [,,,,,,,,,],
     ],
 
     publicBoard: [
@@ -47,6 +47,35 @@ const Gameboard = () => {
           }
         }
       }
+    },
+
+    computerPlaceShip: function (size, shipName) {
+      let rndPos = [Math.floor(Math.random() * 10), Math.floor(Math.random() * 10)];
+      let rndDirection = Math.floor(Math.random() * 2);
+      switch (rndDirection) {
+        case 0:
+          rndDirection = 'hor';
+          break;
+        case 1:
+        default:
+          rndDirection = 'ver';
+          break;
+      }
+
+      while (!this.isValid(size, rndPos, rndDirection)) {
+        rndPos = [Math.floor(Math.random() * 10), Math.floor(Math.random() * 10)];
+        rndDirection = Math.floor(Math.random() * 2);
+        switch (rndDirection) {
+          case 0:
+            rndDirection = 'hor';
+            break;
+          case 1:
+          default:
+            rndDirection = 'ver';
+            break;
+        }
+      }
+      this.placeShip(size, rndPos, shipName, rndDirection);
     },
 
     isValid: function (size, startPos, direction = 'hor') {

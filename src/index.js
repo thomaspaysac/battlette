@@ -24,13 +24,21 @@ const turn_info = document.querySelector('.turn-info');
 
 
 
-// Initialize game
+// Initialize game functions
 new_game_button.addEventListener('click', () => {
   InitializeGame();
   placementPhase();
 });
 
 start_game_button.addEventListener('click', () => StartGame());
+
+function ComputerPlaceShips () {
+  player2.gameboard.computerPlaceShip(5, 'Carrier');
+  player2.gameboard.computerPlaceShip(4, 'Battleship');
+  player2.gameboard.computerPlaceShip(3, 'Cruiser');
+  player2.gameboard.computerPlaceShip(3, 'Submarine');
+  player2.gameboard.computerPlaceShip(2, 'Destroyer');
+}
 
 function InitializeGame() {
   player1 = Player('Thomas');
@@ -45,6 +53,7 @@ function InitializeGame() {
 }
 
 function placementPhase () {
+  ComputerPlaceShips();
   const p1Carrier = document.getElementById('p1-carrier');
   const p1Battleship = document.getElementById('p1-battleship');
   const p1Cruiser = document.getElementById('p1-cruiser');
@@ -270,7 +279,7 @@ player2_log.addEventListener('click', () => {
 // Horizontal/vertical toggle
 // Faire placement aléatoire des navires COM
   // -> Prendre coordonnées au hasard, check isValid(), si oui PlaceShip sinon recommencer, lorsqu'un navire est placé recommencer avec le suivant. Ajouter hor/ver aléatoire (0/1)
-// Fix bug d'affichage lorsqu'on clique sur un autre navire avant sans avoir cliqué au préalable pour placer le premier
+// Fix bug d'affichage lorsqu'on clique sur un autre navire avant sans avoir cliqué au préalable pour placer le premier : remove eventListener en début de fonction ?
 // Ajouter écran de game over
 
 // PvP : alterner 'privateBoard' (joueur en cours) et 'publicBoard' (joueur adverse)
