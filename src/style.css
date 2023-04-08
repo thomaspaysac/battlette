@@ -1,21 +1,26 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
 * {
-  box-sizing: border-box; }
+  box-sizing: border-box;
+  font-family: 'Roboto', sans-serif; }
 
 body {
   margin: 0; }
 
 .battlefield {
   display: flex;
-  justify-content: space-around;
-  align-items: center; }
+  justify-content: center;
+  gap: 150px; }
 
-#player1-ships li {
-  margin: 8px 0;
-  display: flex;
-  align-items: center;
-  gap: 8px; }
-#player1-ships img {
-  height: 1rem; }
+#player1-ships, #player2-ships {
+  display: none; }
+  #player1-ships li, #player2-ships li {
+    margin: 8px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px; }
+  #player1-ships img, #player2-ships img {
+    height: 1rem;
+    cursor: pointer; }
 
 #player1-board, #player2-board {
   display: grid;
@@ -56,5 +61,25 @@ body {
   .battle-info .turn-info {
     font-size: 1.2rem;
     font-weight: 700; }
+
+.backdrop {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  background-color: rgba(211, 211, 211, 0.564); }
+
+.game-over_modal {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 1px solid black;
+  background-color: grey;
+  z-index: 3;
+  padding: 3rem; }
 
 /*# sourceMappingURL=style.css.map */

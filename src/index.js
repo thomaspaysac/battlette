@@ -17,12 +17,31 @@ const start_game_button = document.getElementById('start-game_button');
 
 const player1_board = document.getElementById('player1-board');
 const player2_board = document.getElementById('player2-board');
+const player1_ships = document.getElementById('player1-ships');
 const player1_log = document.getElementById('player1-log');
 const player2_log = document.getElementById('player2-log');
 const turn_info = document.querySelector('.turn-info');
 
 
+// Modals display
 
+const closeModalButton = document.querySelector('.close-modal_button');
+closeModalButton.addEventListener('click', () => CloseModal('game-over_modal'));
+
+function OpenModal(modal) {
+  const backdrop = document.querySelector('.backdrop');
+  backdrop.style.display = 'block';
+  backdrop.addEventListener('click', () => CloseModal(modal));
+  const modalToOpen = document.querySelector(`.${modal}`);
+  modalToOpen.style.display = 'block';
+}
+
+function CloseModal(modal) {
+  const backdrop = document.querySelector('.backdrop');
+  backdrop.style.display = 'none';
+  const modalToClose = document.querySelector(`.${modal}`);
+  modalToClose.style.display = 'none';
+}
 
 // Initialize game functions
 new_game_button.addEventListener('click', () => {
@@ -32,6 +51,13 @@ new_game_button.addEventListener('click', () => {
 
 start_game_button.addEventListener('click', () => StartGame());
 
+function InitializeGame() {
+  player1 = Player('Thomas');
+  player2 = Player('Computer');
+  player1_ships.style.display = 'block';
+  p1Cells = PopulateP1();
+  p2Cells = PopulateP2();
+}
 function ComputerPlaceShips () {
   player2.gameboard.computerPlaceShip(5, 'Carrier');
   player2.gameboard.computerPlaceShip(4, 'Battleship');
@@ -40,48 +66,52 @@ function ComputerPlaceShips () {
   player2.gameboard.computerPlaceShip(2, 'Destroyer');
 }
 
-function InitializeGame() {
-  player1 = Player('Thomas');
-  player2 = Player('Computer');
-  /*player2.gameboard.placeShip(5, [1,0], 'Carrier');
-  player2.gameboard.placeShip(4, [3,4], 'Battleship');
-  player2.gameboard.placeShip(3, [5,7], 'Cruiser', 'ver');
-  player2.gameboard.placeShip(3, [7,3], 'Submarine', 'ver');
-  player2.gameboard.placeShip(2, [3,2], 'Destroyer', 'ver');*/
-  p1Cells = PopulateP1();
-  p2Cells = PopulateP2();
+function Player1PlaceShips () {
+  const p1CarrierHor = document.querySelector('.p1-carrier > .hor');
+  const p1CarrierVer = document.querySelector('.p1-carrier > .ver');
+  p1CarrierHor.addEventListener('click', () => ActivatePlacement(player1, p1Cells, 5, 'Carrier', '.p1-carrier'));
+  p1CarrierVer.addEventListener('click', () => ActivatePlacement(player1, p1Cells, 5, 'Carrier', '.p1-carrier', 'ver'));
+  const p1BattleshipHor = document.querySelector('.p1-battleship > .hor');
+  const p1BattleshipVer = document.querySelector('.p1-battleship > .ver');
+  p1BattleshipHor.addEventListener('click', () => ActivatePlacement(player1, p1Cells, 4, 'Battleship', '.p1-battleship'));
+  p1BattleshipVer.addEventListener('click', () => ActivatePlacement(player1, p1Cells, 4, 'Battleship', '.p1-battleship', 'ver'));
+  const p1CruiserHor = document.querySelector('.p1-cruiser > .hor');
+  const p1CruiserVer = document.querySelector('.p1-cruiser > .ver');
+  p1CruiserHor.addEventListener('click', () => ActivatePlacement(player1, p1Cells, 3, 'Cruiser', '.p1-cruiser'));
+  p1CruiserVer.addEventListener('click', () => ActivatePlacement(player1, p1Cells, 3, 'Cruiser', '.p1-cruiser', 'ver'));
+  const p1SubmarineHor = document.querySelector('.p1-submarine > .hor');
+  const p1SubmarineVer = document.querySelector('.p1-submarine > .ver');
+  p1SubmarineHor.addEventListener('click', () => ActivatePlacement(player1, p1Cells, 3, 'Submarine', '.p1-submarine'));
+  p1SubmarineVer.addEventListener('click', () => ActivatePlacement(player1, p1Cells, 3, 'Submarine', '.p1-submarine', 'ver'));
+  const p1DestroyerHor = document.querySelector('.p1-destroyer > .hor');
+  const p1DestroyerVer = document.querySelector('.p1-destroyer > .ver');
+  p1DestroyerHor.addEventListener('click', () => ActivatePlacement(player1, p1Cells, 2, 'Destroyer', '.p1-destroyer'));
+  p1DestroyerVer.addEventListener('click', () => ActivatePlacement(player1, p1Cells, 2, 'Destroyer', '.p1-destroyer', 'ver'));
 }
 
 function placementPhase () {
   ComputerPlaceShips();
-  const p1Carrier = document.getElementById('p1-carrier');
-  const p1Battleship = document.getElementById('p1-battleship');
-  const p1Cruiser = document.getElementById('p1-cruiser');
-  const p1Submarine = document.getElementById('p1-submarine');
-  const p1Destroyer = document.getElementById('p1-destroyer');
-  p1Carrier.addEventListener('click', () => ActivatePlacement(player1, p1Cells, 5, 'Carrier'));
-  p1Battleship.addEventListener('click', () => ActivatePlacement(player1, p1Cells, 4, 'Battleship'));
-  p1Cruiser.addEventListener('click', () => ActivatePlacement(player1, p1Cells, 3, 'Cruiser', 'ver'));
-  p1Submarine.addEventListener('click', () => ActivatePlacement(player1, p1Cells, 3, 'Submarine'));
-  p1Destroyer.addEventListener('click', () => ActivatePlacement(player1, p1Cells, 2, 'Destroyer'));
+  Player1PlaceShips();
 }
 
 // Activate click on own board to place ships
-function ActivatePlacement (player, cellsArr, size, shipName, orientation = 'hor') {
+function ActivatePlacement (player, cellsArr, size, shipName, domElement, orientation = 'hor') {  
   // Check if the ship has already been placed, if yes then the function returns an error
   let placedShip = player.gameboard.shipList.find(el => el.name === shipName);
   if (placedShip) {
     throw new Error('This ship is already in place.');
+  
   } else {
+  // Display ship size overlay on hover
+  let coloredCell;
   cellsArr.forEach(el => {
-    // Display ship size overlay on hover
     if (orientation === 'hor') {
-      el.addEventListener('mouseover', (e) => {    
+      el.addEventListener('mouseover', () => {    
         const startingY = el.className.slice(0,7);
         const startingX = +el.className.slice(7,8);
         if (player.gameboard.isValid(size, [+startingY.slice(-1), startingX])) {
           for (let i = startingX; i < (+startingX + size); i++) {
-            const coloredCell = document.getElementsByClassName(`${startingY}${i}`)[0];
+            coloredCell = document.getElementsByClassName(`${startingY}${i}`)[0];
             coloredCell.classList.add('placing-ship-cell');
           }
           el.addEventListener('mouseout', (e) => {
@@ -90,12 +120,12 @@ function ActivatePlacement (player, cellsArr, size, shipName, orientation = 'hor
         } else {
           if (startingX + size > 10) {
             for (let i = startingX; i < 10; i++) {
-              const coloredCell = document.getElementsByClassName(`${startingY}${i}`)[0];
+              coloredCell = document.getElementsByClassName(`${startingY}${i}`)[0];
               coloredCell.classList.add('placing-error');
             }
           } else {
             for (let i = startingX; i < startingX + size; i++) {
-              const coloredCell = document.getElementsByClassName(`${startingY}${i}`)[0];
+              coloredCell = document.getElementsByClassName(`${startingY}${i}`)[0];
               coloredCell.classList.add('placing-error');
             }
           }
@@ -107,13 +137,12 @@ function ActivatePlacement (player, cellsArr, size, shipName, orientation = 'hor
       });
     } else {
       el.addEventListener('mouseover', (e) => {    
-        const startingY = el.className.slice(0,7);
-        const Ycoord = +startingY.slice(-1);
+        const Ycoord = +el.className.slice(6,7);
         const startingX = +el.className.slice(7,8);
         const cellName = el.className.slice(0,6);
         if (player.gameboard.isValid(size, [Ycoord, startingX], 'ver')) {
           for (let i = Ycoord; i < (Ycoord + size); i++) {
-            const coloredCell = document.getElementsByClassName(`${cellName}${i}${startingX}`)[0];
+            coloredCell = document.getElementsByClassName(`${cellName}${i}${startingX}`)[0];
             coloredCell.classList.add('placing-ship-cell');
           }
           el.addEventListener('mouseout', (e) => {
@@ -122,12 +151,12 @@ function ActivatePlacement (player, cellsArr, size, shipName, orientation = 'hor
         } else {
           if (Ycoord + size > 10){
             for (let i = Ycoord; i < 10; i++) {
-              const coloredCell = document.getElementsByClassName(`${cellName}${i}${startingX}`)[0];
+              coloredCell = document.getElementsByClassName(`${cellName}${i}${startingX}`)[0];
               coloredCell.classList.add('placing-error');
             }
           } else {
             for (let i = Ycoord; i < Ycoord + size; i++) {
-              const coloredCell = document.getElementsByClassName(`${cellName}${i}${startingX}`)[0];
+              coloredCell = document.getElementsByClassName(`${cellName}${i}${startingX}`)[0];
               coloredCell.classList.add('placing-error');
             }
           }
@@ -137,12 +166,19 @@ function ActivatePlacement (player, cellsArr, size, shipName, orientation = 'hor
         }
       });
     }
+
     // Place ship when clicking
     el.addEventListener('click', (e) => {
       const targetCell = (el.className.slice(6, 8)).split('');
       const targetCoordinates = [+targetCell[0], +targetCell[1]];
       player.gameboard.placeShip(size, targetCoordinates, shipName, orientation);
       p1Cells = PopulateP1();
+      const shipListName = document.querySelector(domElement);
+      shipListName.style.color = 'grey';
+      const horButton = document.querySelector(`${domElement} > .hor`);
+      const verButton = document.querySelector(`${domElement} > .ver`);
+      horButton.style.display = 'none';
+      verButton.style.display = 'none';
     });
   });}
 }
@@ -156,6 +192,7 @@ function StartGame () {
   }
 }
 
+// Main game flow, alternate turn between players and enable attacking the opponent's board
 function InitializeTurn(currentPlayer) {
   UpdateInfoDisplay();
   p1Cells = PopulateP1();
@@ -164,6 +201,7 @@ function InitializeTurn(currentPlayer) {
     ActivateAttackOn(p2Cells, player1, player2);
   } else {
     computerAttack();
+    // For PvP:
     //ActivateAttackOn(p1Cells, player2, player1);
   }
 }
@@ -211,10 +249,6 @@ function PopulateP2 (board = 'publicBoard') {
   return document.querySelectorAll('.cell2');
 }
 
-function PlaceShipPrompt () {
-
-}
-
 // Activate attack on one player board at a time, works for PVP
 function ActivateAttackOn (cellsArr, attacker, defender) {
   cellsArr.forEach(el => {
@@ -239,8 +273,11 @@ function ActivateAttackOn (cellsArr, attacker, defender) {
         PopulateP1();
         currentPlayer = 'player1';
       }
-      winCheck();
-      InitializeTurn(currentPlayer);
+      if (!winCheck()) {
+        InitializeTurn(currentPlayer);
+      } else {
+        OpenModal('game-over_modal');
+      }
     });
   });
 }
@@ -256,7 +293,7 @@ function computerAttack () {
 // Check win condition
 function winCheck () {
   if (player1.gameboard.getStatus() || player2.gameboard.getStatus()) {
-    console.log('Game over');
+    return true;
   }
 }
 
@@ -276,11 +313,8 @@ player2_log.addEventListener('click', () => {
 
 
 // ROADMAP
-// Horizontal/vertical toggle
-// Faire placement aléatoire des navires COM
-  // -> Prendre coordonnées au hasard, check isValid(), si oui PlaceShip sinon recommencer, lorsqu'un navire est placé recommencer avec le suivant. Ajouter hor/ver aléatoire (0/1)
+// Visual feedback : changer la couleur du bouton 'start' lorsque tous les navires sont placés, 'new game' plus en évidence lorsaue ça fait sens (partie pas encore lancée, ou partie terminée)
 // Fix bug d'affichage lorsqu'on clique sur un autre navire avant sans avoir cliqué au préalable pour placer le premier : remove eventListener en début de fonction ?
-// Ajouter écran de game over
 
 // PvP : alterner 'privateBoard' (joueur en cours) et 'publicBoard' (joueur adverse)
   // -> utiliser 'publicBoard' affiche le brouillard de guerre, 'privateBoard' affiche la position des navires

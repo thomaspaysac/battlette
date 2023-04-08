@@ -125,13 +125,28 @@
           <div class="empty-cell"></div>
         </div>
       </div>
-      <div id="player1-ships">Ships
+      <div id="player1-ships">Place your ships:
         <ul>
-          <li id="p1-carrier">Carrier (5) <img src="./images/dots-vertical.png" alt="" id="p1-carrier-ver"></li>
-          <li id="p1-battleship">Battleship (4)</li>
-          <li id="p1-cruiser">Cruiser (3)</li>
-          <li id="p1-submarine">Submarine (3)</li>
-          <li id="p1-destroyer">Destroyer (2)</li>
+          <li class="p1-carrier">&#9634;&#9634;&#9634;&#9634;&#9634; Carrier
+            <img src="./images/dots-horizontal.png" title="Horizontal placement" alt="Horizontal placement" class="hor">
+            <img src="./images/dots-vertical.png" title="Vertical placement" alt="Vertical placement" class="ver">
+          </li>
+          <li class="p1-battleship">&#9634;&#9634;&#9634;&#9634; Battleship
+            <img src="./images/dots-horizontal.png" title="Horizontal placement" alt="Horizontal placement" class="hor">
+            <img src="./images/dots-vertical.png" title="Vertical placement" alt="Vertical placement" class="ver">
+          </li>
+          <li class="p1-cruiser">&#9634;&#9634;&#9634; Cruiser
+            <img src="./images/dots-horizontal.png" title="Horizontal placement" alt="Horizontal placement" class="hor">
+            <img src="./images/dots-vertical.png" title="Vertical placement" alt="Vertical placement" class="ver">
+          </li>
+          <li class="p1-submarine">&#9634;&#9634;&#9634; Submarine
+            <img src="./images/dots-horizontal.png" title="Horizontal placement" alt="Horizontal placement" class="hor">
+            <img src="./images/dots-vertical.png" title="Vertical placement" alt="Vertical placement" class="ver">
+          </li>
+          <li class="p1-destroyer">&#9634;&#9634; Destroyer
+            <img src="./images/dots-horizontal.png" title="Horizontal placement" alt="Horizontal placement" class="hor">
+            <img src="./images/dots-vertical.png" title="Vertical placement" alt="Vertical placement" class="ver">
+          </li>
         </ul>
       </div>
     </div>
@@ -259,5 +274,13 @@
     <button id="player2-log">Player 2 Log</button>
     <button id="start-game_button">Start the battle</button>
   </section>
+
+  <div class="backdrop"></div>
+
+  <div class="game-over_modal">
+    <h3>Game Over</h3>
+    <p>Player 1 wins.</p>
+    <button class="close-modal_button">X</button>
+  </div>
 </body>
 </html>
