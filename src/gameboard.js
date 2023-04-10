@@ -97,7 +97,6 @@ const Gameboard = () => {
         }
       }
       availableCheck = targetArr.every(el => el === undefined);
-      //console.log({sizeCheck, availableCheck});
       return (sizeCheck && availableCheck);
       },
 

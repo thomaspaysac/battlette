@@ -2,7 +2,6 @@ import './style.css';
 import { Ship } from './ship.js';
 import { Gameboard } from './gameboard';
 import { Player } from './player';
-import { GenerateShipModal } from './placeShipModal';
 
 // Gobal variables
 let player1;
@@ -14,8 +13,8 @@ let currentPlayer = 'player1';
 
 // DOM Elements
 const new_game_button = document.getElementById('new-game_button');
-const start_game_button = document.getElementById('start-game_button');
 const pvp_new_game_button = document.getElementById('pvp-new-game_button');
+const start_game_button = document.getElementById('start-game_button');
 
 const player1_board = document.getElementById('player1-board');
 const player1_ships = document.getElementById('player1-ships');
@@ -27,7 +26,6 @@ const turn_info = document.querySelector('.turn-info');
 
 
 // Modals display
-
 const closeModalButton = document.querySelector('.close-modal_button');
 closeModalButton.addEventListener('click', () => CloseModal('game-over_modal'));
 
@@ -48,25 +46,61 @@ function CloseModal(modal) {
 
 // Initialize game functions
 new_game_button.addEventListener('click', () => {
-  InitializeGame('Thomas', 'Computer', 'com');
+  resetDOM();
+  InitializeGame('Player', 'Computer', 'com');
   placementPhase();
+  start_game_button.textContent = 'Start the battle';
 });
 
 pvp_new_game_button.addEventListener('click', () => {
+  resetDOM();
   InitializeGame('Player 1', 'Player 2', 'pvp');
   placementPhase();
+  start_game_button.textContent = 'Change player';
 });
 
-start_game_button.addEventListener('click', () => StartGame());
+start_game_button.addEventListener('click', () => {
+  if (gameMode === 'com') {
+    StartGame();
+  } else if (gameMode === 'pvp' && player2.gameboard.shipList.length === 5 && player2.gameboard.shipList.length === 5) { 
+    StartGame();
+  }
+  else {
+    resetDOM('player2');
+    changePlayerPlacement();
+  }
+});
+
+function resetDOM (player = 'player1') {
+  const ship_list = document.querySelectorAll(`#${player}-ships li`);
+  const orientation_buttons = document.querySelectorAll(`#${player}-ships img`);
+  for (let i = 0; i < ship_list.length; i++) {
+    ship_list[i].style.color = 'black';
+  }
+  for (let i = 0; i < orientation_buttons.length; i++) {
+    orientation_buttons[i].style.display = 'block';
+  }
+  if (player === 'player1') {
+    document.getElementById('player2-ships').style.display = 'none';
+  }
+}
+
+function changePlayerPlacement () {
+  if (player1.gameboard.shipList.length !== 5) {
+    throw new Error ('Player 1 must first place all his/her ships.');
+  } else {
+    player1_ships.style.display = 'none';
+    p1Cells = PopulateP1('publicBoard');
+    Player2PlaceShips();
+  }
+}
 
 function InitializeGame(p1name, p2name, mode) {
   gameMode = mode;
   player1 = Player(p1name);
   player2 = Player(p2name);
   p1Cells = PopulateP1();
-  p2Cells = PopulateP2();
-  player1_ships.style.display = 'block';
-  player2_ships.style.display = 'block';
+  p2Cells = PopulateP2('publicBoard');
 }
 
 function ComputerPlaceShips () {
@@ -77,7 +111,18 @@ function ComputerPlaceShips () {
   player2.gameboard.computerPlaceShip(2, 'Destroyer');
 }
 
+function placementPhase () {
+  if (gameMode === 'com') {
+    ComputerPlaceShips();
+    Player1PlaceShips();
+    player2_ships.style.display = 'none';
+  } else {
+    Player1PlaceShips();
+  }
+}
+
 function Player1PlaceShips () {
+  player1_ships.style.display = 'block';
   const p1CarrierHor = document.querySelector('.p1-carrier > .hor');
   const p1CarrierVer = document.querySelector('.p1-carrier > .ver');
   p1CarrierHor.addEventListener('click', () => ActivatePlacement(player1, p1Cells, 5, 'Carrier', '.p1-carrier'));
@@ -101,6 +146,7 @@ function Player1PlaceShips () {
 }
 
 function Player2PlaceShips () {
+  player2_ships.style.display = 'block';
   const p2CarrierHor = document.querySelector('.p2-carrier > .hor');
   const p2CarrierVer = document.querySelector('.p2-carrier > .ver');
   p2CarrierHor.addEventListener('click', () => ActivatePlacement(player2, p2Cells, 5, 'Carrier', '.p2-carrier'));
@@ -121,16 +167,6 @@ function Player2PlaceShips () {
   const p2DestroyerVer = document.querySelector('.p2-destroyer > .ver');
   p2DestroyerHor.addEventListener('click', () => ActivatePlacement(player2, p2Cells, 2, 'Destroyer', '.p2-destroyer'));
   p2DestroyerVer.addEventListener('click', () => ActivatePlacement(player2, p2Cells, 2, 'Destroyer', '.p2-destroyer', 'ver'));
-}
-
-function placementPhase () {
-  if (gameMode === 'com') {
-    ComputerPlaceShips();
-    Player1PlaceShips();
-  } else {
-    Player1PlaceShips();
-    Player2PlaceShips();
-  }
 }
 
 // Activate click on own board to place ships
@@ -211,13 +247,20 @@ function ActivatePlacement (player, cellsArr, size, shipName, domElement, orient
       const targetCell = (el.className.slice(6, 8)).split('');
       const targetCoordinates = [+targetCell[0], +targetCell[1]];
       player.gameboard.placeShip(size, targetCoordinates, shipName, orientation);
-      p1Cells = PopulateP1();
+      if (player === player1) {
+        p1Cells = PopulateP1();
+      } else {
+        p2Cells = PopulateP2('privateBoard');
+      }
       const shipListName = document.querySelector(domElement);
       shipListName.style.color = 'grey';
       const horButton = document.querySelector(`${domElement} > .hor`);
       const verButton = document.querySelector(`${domElement} > .ver`);
       horButton.style.display = 'none';
       verButton.style.display = 'none';
+      // In PvP when the last ship is placed, display the 'start game button'
+      if (gameMode === 'pvp' && player2.gameboard.shipList.length === 5 && player2.gameboard.shipList.length === 5)
+        start_game_button.textContent = 'Start game';
     });
   });}
 }
@@ -237,11 +280,17 @@ function InitializeTurn(currentPlayer) {
   p1Cells = PopulateP1();
   p2Cells = PopulateP2();
   if (currentPlayer === 'player1') {
+    p1Cells = PopulateP1('privateBoard');
+    p2Cells = PopulateP2('publicBoard');
     ActivateAttackOn(p2Cells, player1, player2);
   } else {
-    computerAttack();
-    // For PvP:
-    //ActivateAttackOn(p1Cells, player2, player1);
+    if (gameMode === 'com') { 
+      computerAttack(); 
+    } else {
+      p1Cells = PopulateP1('publicBoard');
+      p2Cells = PopulateP2('privateBoard');
+      ActivateAttackOn(p1Cells, player2, player1); 
+    }
   }
 }
 
@@ -258,7 +307,7 @@ function PopulateP1 (board = 'privateBoard') {
       } else if (cell.textContent === '~') {
         cell.style.backgroundColor = '#d1d3ef';
       } else if (cell.textContent) {
-        cell.textContent = 'O';
+        cell.textContent = `▢`;
         cell.style.backgroundColor = '#c7e6d0';
       }
       cell.className = `cell1 ${i}${j}`;
@@ -280,6 +329,9 @@ function PopulateP2 (board = 'publicBoard') {
         cell.style.backgroundColor = '#f3bbbb';
       } else if (cell.textContent === '~') {
         cell.style.backgroundColor = '#d1d3ef';
+      } else if (cell.textContent) {
+        cell.textContent = `▢`;
+        cell.style.backgroundColor = '#c7e6d0';
       }
       cell.className = `cell2 ${i}${j}`;
       player2_board.appendChild(cell);
@@ -352,9 +404,10 @@ player2_log.addEventListener('click', () => {
 
 
 // ROADMAP
+// Ajouter modal pour passer au joueur suivant sans révéler la carte
 // Visual feedback : changer la couleur du bouton 'start' lorsque tous les navires sont placés, 'new game' plus en évidence lorsaue ça fait sens (partie pas encore lancée, ou partie terminée)
-// Fix bug d'affichage lorsqu'on clique sur un autre navire avant sans avoir cliqué au préalable pour placer le premier : remove eventListener en début de fonction ?
+// Faire l'UI
+// Afficher messages d'erreurs dans l'UI
 
-// PvP : alterner 'privateBoard' (joueur en cours) et 'publicBoard' (joueur adverse)
-  // -> utiliser 'publicBoard' affiche le brouillard de guerre, 'privateBoard' affiche la position des navires
-  // Passer un argument dans les fonctions qui active la branche PvP pour : placement des vaisseaux et attaques
+// BUGS
+// Bug d'affichage lorsqu'on clique sur un autre navire avant sans avoir cliqué au préalable pour placer le premier : remove eventListener en début de fonction ?
