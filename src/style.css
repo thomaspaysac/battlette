@@ -9,27 +9,36 @@ body {
 header {
   text-align: center; }
 
+#new-game_button,
+#pvp-new-game_button {
+  background-color: rgba(255, 0, 0, 0.43); }
+
 .battlefield {
   display: flex;
   justify-content: center;
   gap: 150px; }
 
-#player1-ships, #player2-ships {
+#player1-ships,
+#player2-ships {
   display: none; }
-  #player1-ships li, #player2-ships li {
+  #player1-ships li,
+  #player2-ships li {
     margin: 8px 0;
     display: flex;
     align-items: center;
     gap: 8px; }
-  #player1-ships img, #player2-ships img {
+  #player1-ships img,
+  #player2-ships img {
     height: 1rem;
     cursor: pointer; }
 
-#player1-board, #player2-board {
+#player1-board,
+#player2-board {
   display: grid;
   grid-template-columns: repeat(10, 1fr);
   grid-template-rows: repeat(10, 1fr); }
-  #player1-board .empty-cell, #player2-board .empty-cell {
+  #player1-board .empty-cell,
+  #player2-board .empty-cell {
     height: 40px;
     width: 40px;
     border: 1px solid rgba(0, 0, 0, 0.445);

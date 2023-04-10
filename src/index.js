@@ -93,6 +93,9 @@ start_game_button.addEventListener('click', () => {
   }
   else {
     resetDOM('player2');
+    start_game_button.disabled = true;
+    start_game_button.style.backgroundColor = 'buttonface';
+    start_game_button.textContent = 'Start game';
     changePlayerPlacement();
   }
 });
@@ -285,8 +288,16 @@ function ActivatePlacement (player, cellsArr, size, shipName, domElement, orient
       horButton.style.display = 'none';
       verButton.style.display = 'none';
       // In PvP when the last ship is placed, display the 'start game button'
-      if (gameMode === 'pvp' && player2.gameboard.shipList.length === 5 && player2.gameboard.shipList.length === 5)
+      if (gameMode === 'pvp' && player1.gameboard.shipList.length === 5) {
+        start_game_button.disabled = false;
+        start_game_button.style.backgroundColor = 'yellow';
+        p1PlacedAllShips = true;
+      }
+      if (gameMode === 'pvp' && player1.gameboard.shipList.length === 5 && player2.gameboard.shipList.length === 5) {
+        start_game_button.disabled =  false;
         start_game_button.textContent = 'Start game';
+        start_game_button.style.backgroundColor = 'green';
+      }
     });
   });}
 }
@@ -449,6 +460,9 @@ player2_log.addEventListener('click', () => {
 // Visual feedback : changer la couleur du bouton 'start' lorsque tous les navires sont placés, 'new game' plus en évidence lorsaue ça fait sens (partie pas encore lancée, ou partie terminée)
 // Faire l'UI
 // Afficher messages d'erreurs dans l'UI
+// Retirer boutons de test
+// Nettoyage du code
+// README.md
 
 // BUGS
 // Bug d'affichage lorsqu'on clique sur un autre navire avant sans avoir cliqué au préalable pour placer le premier : remove eventListener en début de fonction ?

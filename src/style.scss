@@ -13,13 +13,22 @@ header {
   text-align: center;
 }
 
+// Buttons
+#new-game_button, 
+#pvp-new-game_button {
+  background-color: rgba(255, 0, 0, 0.43);
+}
+
+// Page components
+
 .battlefield {
   display: flex;
   justify-content: center;
   gap: 150px;
 }
 
-#player1-ships, #player2-ships {
+#player1-ships, 
+#player2-ships {
   display: none;
 
   li {
@@ -35,7 +44,8 @@ header {
   }
 }
 
-#player1-board, #player2-board {
+#player1-board, 
+#player2-board {
   display: grid;
   grid-template-columns: repeat(10, 1fr);
   grid-template-rows: repeat(10, 1fr);
