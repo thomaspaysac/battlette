@@ -44,6 +44,21 @@ function CloseModal(modal) {
   modalToClose.style.display = 'none';
 }
 
+function PassTurnModal () {
+  p1Cells = PopulateP1('publicBoard');
+  p2Cells = PopulateP2('publicBoard');
+  const backdrop = document.querySelector('.backdrop');
+  backdrop.style.display = 'block';
+  document.querySelector('.pass-turn_modal').style.display = 'flex';
+  if (currentPlayer === 'player1') {
+    document.querySelector('.pass-turn_modal > p').textContent = `Player 1's turn`;
+  } else {
+    document.querySelector('.pass-turn_modal > p').textContent = `Player 2's turn`;
+  }
+  p1Cells = PopulateP1('publicBoard');
+  p2Cells = PopulateP2('publicBoard');
+}
+
 // Initialize game functions
 new_game_button.addEventListener('click', () => {
   resetDOM();
@@ -364,10 +379,22 @@ function ActivateAttackOn (cellsArr, attacker, defender) {
         PopulateP1();
         currentPlayer = 'player1';
       }
-      if (!winCheck()) {
-        InitializeTurn(currentPlayer);
+      if (gameMode === 'pvp') {
+        if (!winCheck()) {
+          PassTurnModal();
+          document.getElementById('pass-turn_confirm-button').addEventListener('click', () => {
+            CloseModal('pass-turn_modal');
+            InitializeTurn(currentPlayer);
+          });
+        } else {
+          OpenModal('game-over_modal');
+        }
       } else {
-        OpenModal('game-over_modal');
+        if (!winCheck()) {
+          InitializeTurn(currentPlayer);
+        } else {
+          OpenModal('game-over_modal');
+        }
       }
     });
   });
@@ -404,10 +431,11 @@ player2_log.addEventListener('click', () => {
 
 
 // ROADMAP
-// Ajouter modal pour passer au joueur suivant sans révéler la carte
+// Ajouter modal avant début de partie PvP pour cacher les deux tableaux lors du passage au premier tour de jeu
 // Visual feedback : changer la couleur du bouton 'start' lorsque tous les navires sont placés, 'new game' plus en évidence lorsaue ça fait sens (partie pas encore lancée, ou partie terminée)
 // Faire l'UI
 // Afficher messages d'erreurs dans l'UI
+// Tester conditions de victoire en PvC et PvP
 
 // BUGS
 // Bug d'affichage lorsqu'on clique sur un autre navire avant sans avoir cliqué au préalable pour placer le premier : remove eventListener en début de fonction ?
