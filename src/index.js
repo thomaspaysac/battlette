@@ -9,15 +9,18 @@ let player1;
 let player2;
 let p1Cells;
 let p2Cells;
+let gameMode;
 let currentPlayer = 'player1';
 
 // DOM Elements
 const new_game_button = document.getElementById('new-game_button');
 const start_game_button = document.getElementById('start-game_button');
+const pvp_new_game_button = document.getElementById('pvp-new-game_button');
 
 const player1_board = document.getElementById('player1-board');
-const player2_board = document.getElementById('player2-board');
 const player1_ships = document.getElementById('player1-ships');
+const player2_board = document.getElementById('player2-board');
+const player2_ships = document.getElementById('player2-ships');
 const player1_log = document.getElementById('player1-log');
 const player2_log = document.getElementById('player2-log');
 const turn_info = document.querySelector('.turn-info');
@@ -45,19 +48,27 @@ function CloseModal(modal) {
 
 // Initialize game functions
 new_game_button.addEventListener('click', () => {
-  InitializeGame();
+  InitializeGame('Thomas', 'Computer', 'com');
+  placementPhase();
+});
+
+pvp_new_game_button.addEventListener('click', () => {
+  InitializeGame('Player 1', 'Player 2', 'pvp');
   placementPhase();
 });
 
 start_game_button.addEventListener('click', () => StartGame());
 
-function InitializeGame() {
-  player1 = Player('Thomas');
-  player2 = Player('Computer');
-  player1_ships.style.display = 'block';
+function InitializeGame(p1name, p2name, mode) {
+  gameMode = mode;
+  player1 = Player(p1name);
+  player2 = Player(p2name);
   p1Cells = PopulateP1();
   p2Cells = PopulateP2();
+  player1_ships.style.display = 'block';
+  player2_ships.style.display = 'block';
 }
+
 function ComputerPlaceShips () {
   player2.gameboard.computerPlaceShip(5, 'Carrier');
   player2.gameboard.computerPlaceShip(4, 'Battleship');
@@ -89,9 +100,37 @@ function Player1PlaceShips () {
   p1DestroyerVer.addEventListener('click', () => ActivatePlacement(player1, p1Cells, 2, 'Destroyer', '.p1-destroyer', 'ver'));
 }
 
+function Player2PlaceShips () {
+  const p2CarrierHor = document.querySelector('.p2-carrier > .hor');
+  const p2CarrierVer = document.querySelector('.p2-carrier > .ver');
+  p2CarrierHor.addEventListener('click', () => ActivatePlacement(player2, p2Cells, 5, 'Carrier', '.p2-carrier'));
+  p2CarrierVer.addEventListener('click', () => ActivatePlacement(player2, p2Cells, 5, 'Carrier', '.p2-carrier', 'ver'));
+  const p2BattleshipHor = document.querySelector('.p2-battleship > .hor');
+  const p2BattleshipVer = document.querySelector('.p2-battleship > .ver');
+  p2BattleshipHor.addEventListener('click', () => ActivatePlacement(player2, p2Cells, 4, 'Battleship', '.p2-battleship'));
+  p2BattleshipVer.addEventListener('click', () => ActivatePlacement(player2, p2Cells, 4, 'Battleship', '.p2-battleship', 'ver'));
+  const p2CruiserHor = document.querySelector('.p2-cruiser > .hor');
+  const p2CruiserVer = document.querySelector('.p2-cruiser > .ver');
+  p2CruiserHor.addEventListener('click', () => ActivatePlacement(player2, p2Cells, 3, 'Cruiser', '.p2-cruiser'));
+  p2CruiserVer.addEventListener('click', () => ActivatePlacement(player2, p2Cells, 3, 'Cruiser', '.p2-cruiser', 'ver'));
+  const p2SubmarineHor = document.querySelector('.p2-submarine > .hor');
+  const p2SubmarineVer = document.querySelector('.p2-submarine > .ver');
+  p2SubmarineHor.addEventListener('click', () => ActivatePlacement(player2, p2Cells, 3, 'Submarine', '.p2-submarine'));
+  p2SubmarineVer.addEventListener('click', () => ActivatePlacement(player2, p2Cells, 3, 'Submarine', '.p2-submarine', 'ver'));
+  const p2DestroyerHor = document.querySelector('.p2-destroyer > .hor');
+  const p2DestroyerVer = document.querySelector('.p2-destroyer > .ver');
+  p2DestroyerHor.addEventListener('click', () => ActivatePlacement(player2, p2Cells, 2, 'Destroyer', '.p2-destroyer'));
+  p2DestroyerVer.addEventListener('click', () => ActivatePlacement(player2, p2Cells, 2, 'Destroyer', '.p2-destroyer', 'ver'));
+}
+
 function placementPhase () {
-  ComputerPlaceShips();
-  Player1PlaceShips();
+  if (gameMode === 'com') {
+    ComputerPlaceShips();
+    Player1PlaceShips();
+  } else {
+    Player1PlaceShips();
+    Player2PlaceShips();
+  }
 }
 
 // Activate click on own board to place ships
@@ -318,3 +357,4 @@ player2_log.addEventListener('click', () => {
 
 // PvP : alterner 'privateBoard' (joueur en cours) et 'publicBoard' (joueur adverse)
   // -> utiliser 'publicBoard' affiche le brouillard de guerre, 'privateBoard' affiche la position des navires
+  // Passer un argument dans les fonctions qui active la branche PvP pour : placement des vaisseaux et attaques
