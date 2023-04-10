@@ -44,6 +44,18 @@ function CloseModal(modal) {
   modalToClose.style.display = 'none';
 }
 
+function GameOverModal () {
+  const backdrop = document.querySelector('.backdrop');
+  backdrop.style.display = 'block';
+  backdrop.addEventListener('click', () => CloseModal('game-over_modal'));
+  document.querySelector('.game-over_modal').style.display = 'block';
+  if (currentPlayer === 'player1') {
+    document.querySelector('.game-over_modal > p').textContent = 'Player 2 wins!';
+  } else {
+    document.querySelector('.game-over_modal > p').textContent = 'Player 1 wins!';
+  }
+}
+
 function PassTurnModal () {
   p1Cells = PopulateP1('publicBoard');
   p2Cells = PopulateP2('publicBoard');
@@ -55,8 +67,6 @@ function PassTurnModal () {
   } else {
     document.querySelector('.pass-turn_modal > p').textContent = `Player 2's turn`;
   }
-  p1Cells = PopulateP1('publicBoard');
-  p2Cells = PopulateP2('publicBoard');
 }
 
 // Initialize game functions
@@ -78,6 +88,7 @@ start_game_button.addEventListener('click', () => {
   if (gameMode === 'com') {
     StartGame();
   } else if (gameMode === 'pvp' && player2.gameboard.shipList.length === 5 && player2.gameboard.shipList.length === 5) { 
+    player2_ships.style.display = 'none';
     StartGame();
   }
   else {
@@ -284,28 +295,40 @@ function StartGame () {
   // Check if all ships have been placed before launching the game
   if (player1.gameboard.shipList.length !== 5) {
     throw new Error('You must still place ships!');
+  } else if (winCheck()) {
+    throw new Error ("The game is already over");
   } else {
     InitializeTurn(currentPlayer);
   }
 }
 
 // Main game flow, alternate turn between players and enable attacking the opponent's board
-function InitializeTurn(currentPlayer) {
-  UpdateInfoDisplay();
-  p1Cells = PopulateP1();
-  p2Cells = PopulateP2();
-  if (currentPlayer === 'player1') {
-    p1Cells = PopulateP1('privateBoard');
-    p2Cells = PopulateP2('publicBoard');
-    ActivateAttackOn(p2Cells, player1, player2);
-  } else {
-    if (gameMode === 'com') { 
-      computerAttack(); 
+function InitializeTurn (currentPlayer) {
+  if (gameMode === 'com') {
+    UpdateInfoDisplay();
+    p1Cells = PopulateP1();
+    p2Cells = PopulateP2();
+    if (currentPlayer === 'player1') {
+      p1Cells = PopulateP1('privateBoard');
+      p2Cells = PopulateP2('publicBoard');
+      ActivateAttackOn(p2Cells, player1, player2);
     } else {
-      p1Cells = PopulateP1('publicBoard');
-      p2Cells = PopulateP2('privateBoard');
-      ActivateAttackOn(p1Cells, player2, player1); 
+      computerAttack(); 
     }
+  } else {
+    PassTurnModal();
+    document.getElementById('pass-turn_confirm-button').addEventListener('click', () => {
+      CloseModal('pass-turn_modal');
+      if (currentPlayer === 'player1') {
+        p1Cells = PopulateP1('privateBoard');
+        p2Cells = PopulateP2('publicBoard');
+        ActivateAttackOn(p2Cells, player1, player2);
+      } else {
+        p1Cells = PopulateP1('publicBoard');
+        p2Cells = PopulateP2('privateBoard');
+        ActivateAttackOn(p1Cells, player2, player1); 
+      }
+    });
   }
 }
 
@@ -379,22 +402,10 @@ function ActivateAttackOn (cellsArr, attacker, defender) {
         PopulateP1();
         currentPlayer = 'player1';
       }
-      if (gameMode === 'pvp') {
-        if (!winCheck()) {
-          PassTurnModal();
-          document.getElementById('pass-turn_confirm-button').addEventListener('click', () => {
-            CloseModal('pass-turn_modal');
-            InitializeTurn(currentPlayer);
-          });
-        } else {
-          OpenModal('game-over_modal');
-        }
+      if (!winCheck()) {
+        InitializeTurn(currentPlayer);
       } else {
-        if (!winCheck()) {
-          InitializeTurn(currentPlayer);
-        } else {
-          OpenModal('game-over_modal');
-        }
+        GameOverModal();
       }
     });
   });
@@ -403,9 +414,12 @@ function ActivateAttackOn (cellsArr, attacker, defender) {
 // Computer attack
 function computerAttack () {
   player2.computerAttack(player1);
-  winCheck();
-  currentPlayer = 'player1';
-  InitializeTurn(currentPlayer);
+  if (!winCheck()) {
+    currentPlayer = 'player1';
+    InitializeTurn(currentPlayer);
+  } else {
+    GameOverModal();
+  }
 }
 
 // Check win condition
@@ -422,6 +436,7 @@ function UpdateInfoDisplay () {
 
 // Test buttons
 player1_log.addEventListener('click', () => {
+  GameOverModal();
   console.log(player1.gameboard);
 });
 
@@ -431,11 +446,9 @@ player2_log.addEventListener('click', () => {
 
 
 // ROADMAP
-// Ajouter modal avant début de partie PvP pour cacher les deux tableaux lors du passage au premier tour de jeu
 // Visual feedback : changer la couleur du bouton 'start' lorsque tous les navires sont placés, 'new game' plus en évidence lorsaue ça fait sens (partie pas encore lancée, ou partie terminée)
 // Faire l'UI
 // Afficher messages d'erreurs dans l'UI
-// Tester conditions de victoire en PvC et PvP
 
 // BUGS
 // Bug d'affichage lorsqu'on clique sur un autre navire avant sans avoir cliqué au préalable pour placer le premier : remove eventListener en début de fonction ?
