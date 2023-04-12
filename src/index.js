@@ -10,6 +10,7 @@ let p1Cells;
 let p2Cells;
 let gameMode;
 let currentPlayer = 'player1';
+let allShipsPlaced= false;
 
 // DOM Elements
 const new_game_button = document.getElementById('new-game_button');
@@ -22,7 +23,7 @@ const player2_board = document.getElementById('player2-board');
 const player2_ships = document.getElementById('player2-ships');
 const player1_log = document.getElementById('player1-log');
 const player2_log = document.getElementById('player2-log');
-const turn_info = document.querySelector('.turn-info');
+const action_info = document.querySelector('.action-info');
 
 
 // Modals display
@@ -45,14 +46,17 @@ function CloseModal(modal) {
 }
 
 function GameOverModal () {
+  
   const backdrop = document.querySelector('.backdrop');
   backdrop.style.display = 'block';
   backdrop.addEventListener('click', () => CloseModal('game-over_modal'));
   document.querySelector('.game-over_modal').style.display = 'block';
   if (currentPlayer === 'player1') {
     document.querySelector('.game-over_modal > p').textContent = 'Player 2 wins!';
+    action_info.textContent = 'Player 2 wins!';
   } else {
     document.querySelector('.game-over_modal > p').textContent = 'Player 1 wins!';
+    action_info.textContent = 'Player 1 wins!';
   }
 }
 
@@ -74,6 +78,10 @@ new_game_button.addEventListener('click', () => {
   resetDOM();
   InitializeGame('Player', 'Computer', 'com');
   placementPhase();
+  action_info.textContent = 'Place each one of your pastries.';
+  start_game_button.style.display = 'block';
+  start_game_button.disabled = true;
+  start_game_button.style.backgroundColor = 'buttonface';
   start_game_button.textContent = 'Start the battle';
 });
 
@@ -81,11 +89,16 @@ pvp_new_game_button.addEventListener('click', () => {
   resetDOM();
   InitializeGame('Player 1', 'Player 2', 'pvp');
   placementPhase();
-  start_game_button.textContent = 'Change player';
+  action_info.textContent = 'Player 1, place each one of your pastries.';
+  start_game_button.style.display = 'block';
+  start_game_button.disabled = true;
+  start_game_button.style.backgroundColor = 'buttonface';
+  start_game_button.textContent = 'Next player';
 });
 
 start_game_button.addEventListener('click', () => {
   if (gameMode === 'com') {
+    player1_ships.style.display = 'none';
     StartGame();
   } else if (gameMode === 'pvp' && player2.gameboard.shipList.length === 5 && player2.gameboard.shipList.length === 5) { 
     player2_ships.style.display = 'none';
@@ -93,6 +106,7 @@ start_game_button.addEventListener('click', () => {
   }
   else {
     resetDOM('player2');
+    action_info.textContent = 'Player 2, place each one of your pastries.';
     start_game_button.disabled = true;
     start_game_button.style.backgroundColor = 'buttonface';
     start_game_button.textContent = 'Start game';
@@ -116,7 +130,7 @@ function resetDOM (player = 'player1') {
 
 function changePlayerPlacement () {
   if (player1.gameboard.shipList.length !== 5) {
-    throw new Error ('Player 1 must first place all his/her ships.');
+    throw new Error ('Player 1 must first place all his/her pastries.');
   } else {
     player1_ships.style.display = 'none';
     p1Cells = PopulateP1('publicBoard');
@@ -152,48 +166,48 @@ function placementPhase () {
 
 function Player1PlaceShips () {
   player1_ships.style.display = 'block';
-  const p1CarrierHor = document.querySelector('.p1-carrier > .hor');
-  const p1CarrierVer = document.querySelector('.p1-carrier > .ver');
+  const p1CarrierHor = document.querySelector('.p1-carrier .hor');
+  const p1CarrierVer = document.querySelector('.p1-carrier .ver');
   p1CarrierHor.addEventListener('click', () => ActivatePlacement(player1, p1Cells, 5, 'Carrier', '.p1-carrier'));
   p1CarrierVer.addEventListener('click', () => ActivatePlacement(player1, p1Cells, 5, 'Carrier', '.p1-carrier', 'ver'));
-  const p1BattleshipHor = document.querySelector('.p1-battleship > .hor');
-  const p1BattleshipVer = document.querySelector('.p1-battleship > .ver');
+  const p1BattleshipHor = document.querySelector('.p1-battleship .hor');
+  const p1BattleshipVer = document.querySelector('.p1-battleship .ver');
   p1BattleshipHor.addEventListener('click', () => ActivatePlacement(player1, p1Cells, 4, 'Battleship', '.p1-battleship'));
   p1BattleshipVer.addEventListener('click', () => ActivatePlacement(player1, p1Cells, 4, 'Battleship', '.p1-battleship', 'ver'));
-  const p1CruiserHor = document.querySelector('.p1-cruiser > .hor');
-  const p1CruiserVer = document.querySelector('.p1-cruiser > .ver');
+  const p1CruiserHor = document.querySelector('.p1-cruiser .hor');
+  const p1CruiserVer = document.querySelector('.p1-cruiser .ver');
   p1CruiserHor.addEventListener('click', () => ActivatePlacement(player1, p1Cells, 3, 'Cruiser', '.p1-cruiser'));
   p1CruiserVer.addEventListener('click', () => ActivatePlacement(player1, p1Cells, 3, 'Cruiser', '.p1-cruiser', 'ver'));
-  const p1SubmarineHor = document.querySelector('.p1-submarine > .hor');
-  const p1SubmarineVer = document.querySelector('.p1-submarine > .ver');
+  const p1SubmarineHor = document.querySelector('.p1-submarine .hor');
+  const p1SubmarineVer = document.querySelector('.p1-submarine .ver');
   p1SubmarineHor.addEventListener('click', () => ActivatePlacement(player1, p1Cells, 3, 'Submarine', '.p1-submarine'));
   p1SubmarineVer.addEventListener('click', () => ActivatePlacement(player1, p1Cells, 3, 'Submarine', '.p1-submarine', 'ver'));
-  const p1DestroyerHor = document.querySelector('.p1-destroyer > .hor');
-  const p1DestroyerVer = document.querySelector('.p1-destroyer > .ver');
+  const p1DestroyerHor = document.querySelector('.p1-destroyer .hor');
+  const p1DestroyerVer = document.querySelector('.p1-destroyer .ver');
   p1DestroyerHor.addEventListener('click', () => ActivatePlacement(player1, p1Cells, 2, 'Destroyer', '.p1-destroyer'));
   p1DestroyerVer.addEventListener('click', () => ActivatePlacement(player1, p1Cells, 2, 'Destroyer', '.p1-destroyer', 'ver'));
 }
 
 function Player2PlaceShips () {
   player2_ships.style.display = 'block';
-  const p2CarrierHor = document.querySelector('.p2-carrier > .hor');
-  const p2CarrierVer = document.querySelector('.p2-carrier > .ver');
+  const p2CarrierHor = document.querySelector('.p2-carrier .hor');
+  const p2CarrierVer = document.querySelector('.p2-carrier .ver');
   p2CarrierHor.addEventListener('click', () => ActivatePlacement(player2, p2Cells, 5, 'Carrier', '.p2-carrier'));
   p2CarrierVer.addEventListener('click', () => ActivatePlacement(player2, p2Cells, 5, 'Carrier', '.p2-carrier', 'ver'));
-  const p2BattleshipHor = document.querySelector('.p2-battleship > .hor');
-  const p2BattleshipVer = document.querySelector('.p2-battleship > .ver');
+  const p2BattleshipHor = document.querySelector('.p2-battleship .hor');
+  const p2BattleshipVer = document.querySelector('.p2-battleship .ver');
   p2BattleshipHor.addEventListener('click', () => ActivatePlacement(player2, p2Cells, 4, 'Battleship', '.p2-battleship'));
   p2BattleshipVer.addEventListener('click', () => ActivatePlacement(player2, p2Cells, 4, 'Battleship', '.p2-battleship', 'ver'));
-  const p2CruiserHor = document.querySelector('.p2-cruiser > .hor');
-  const p2CruiserVer = document.querySelector('.p2-cruiser > .ver');
+  const p2CruiserHor = document.querySelector('.p2-cruiser .hor');
+  const p2CruiserVer = document.querySelector('.p2-cruiser .ver');
   p2CruiserHor.addEventListener('click', () => ActivatePlacement(player2, p2Cells, 3, 'Cruiser', '.p2-cruiser'));
   p2CruiserVer.addEventListener('click', () => ActivatePlacement(player2, p2Cells, 3, 'Cruiser', '.p2-cruiser', 'ver'));
-  const p2SubmarineHor = document.querySelector('.p2-submarine > .hor');
-  const p2SubmarineVer = document.querySelector('.p2-submarine > .ver');
+  const p2SubmarineHor = document.querySelector('.p2-submarine .hor');
+  const p2SubmarineVer = document.querySelector('.p2-submarine .ver');
   p2SubmarineHor.addEventListener('click', () => ActivatePlacement(player2, p2Cells, 3, 'Submarine', '.p2-submarine'));
   p2SubmarineVer.addEventListener('click', () => ActivatePlacement(player2, p2Cells, 3, 'Submarine', '.p2-submarine', 'ver'));
-  const p2DestroyerHor = document.querySelector('.p2-destroyer > .hor');
-  const p2DestroyerVer = document.querySelector('.p2-destroyer > .ver');
+  const p2DestroyerHor = document.querySelector('.p2-destroyer .hor');
+  const p2DestroyerVer = document.querySelector('.p2-destroyer .ver');
   p2DestroyerHor.addEventListener('click', () => ActivatePlacement(player2, p2Cells, 2, 'Destroyer', '.p2-destroyer'));
   p2DestroyerVer.addEventListener('click', () => ActivatePlacement(player2, p2Cells, 2, 'Destroyer', '.p2-destroyer', 'ver'));
 }
@@ -203,7 +217,7 @@ function ActivatePlacement (player, cellsArr, size, shipName, domElement, orient
   // Check if the ship has already been placed, if yes then the function returns an error
   let placedShip = player.gameboard.shipList.find(el => el.name === shipName);
   if (placedShip) {
-    throw new Error('This ship is already in place.');
+    throw new Error('This pastrie is already in place.');
   
   } else {
   // Display ship size overlay on hover
@@ -283,17 +297,20 @@ function ActivatePlacement (player, cellsArr, size, shipName, domElement, orient
       }
       const shipListName = document.querySelector(domElement);
       shipListName.style.color = 'grey';
-      const horButton = document.querySelector(`${domElement} > .hor`);
-      const verButton = document.querySelector(`${domElement} > .ver`);
+      const horButton = document.querySelector(`${domElement}  .hor`);
+      const verButton = document.querySelector(`${domElement}  .ver`);
       horButton.style.display = 'none';
       verButton.style.display = 'none';
-      // In PvP when the last ship is placed, display the 'start game button'
-      if (gameMode === 'pvp' && player1.gameboard.shipList.length === 5) {
+      // Change the state of the 'start game' button depending on if the placement is finished
+      if (gameMode === 'com' && player1.gameboard.shipList.length === 5) {
+        start_game_button.disabled = false;
+        start_game_button.style.backgroundColor = 'green';
+      }
+      if (gameMode === 'pvp' && player1.gameboard.shipList.length === 5 && allShipsPlaced === false) {
         start_game_button.disabled = false;
         start_game_button.style.backgroundColor = 'yellow';
-        p1PlacedAllShips = true;
-      }
-      if (gameMode === 'pvp' && player1.gameboard.shipList.length === 5 && player2.gameboard.shipList.length === 5) {
+        allShipsPlaced = true;
+      } else if (gameMode === 'pvp' && player1.gameboard.shipList.length === 5 && player2.gameboard.shipList.length === 5) {
         start_game_button.disabled =  false;
         start_game_button.textContent = 'Start game';
         start_game_button.style.backgroundColor = 'green';
@@ -305,18 +322,21 @@ function ActivatePlacement (player, cellsArr, size, shipName, domElement, orient
 function StartGame () {
   // Check if all ships have been placed before launching the game
   if (player1.gameboard.shipList.length !== 5) {
-    throw new Error('You must still place ships!');
+    throw new Error('You must still place pastries!');
   } else if (winCheck()) {
     throw new Error ("The game is already over");
   } else {
+    start_game_button.style.display = 'none';
+    start_game_button.disabled = true;
+    start_game_button.style.backgroundColor = 'buttonface';
     InitializeTurn(currentPlayer);
   }
 }
 
 // Main game flow, alternate turn between players and enable attacking the opponent's board
 function InitializeTurn (currentPlayer) {
+  UpdateInfoDisplay();
   if (gameMode === 'com') {
-    UpdateInfoDisplay();
     p1Cells = PopulateP1();
     p2Cells = PopulateP2();
     if (currentPlayer === 'player1') {
@@ -352,12 +372,15 @@ function PopulateP1 (board = 'privateBoard') {
       let cell = document.createElement('div');
       cell.textContent = targetBoard[i][j];
       if (cell.textContent === 'X') {
-        cell.style.backgroundColor = '#f3bbbb';
+        cell.style.backgroundColor = '#c84771';
+        cell.style.color = '#ffffff';
       } else if (cell.textContent === '~') {
-        cell.style.backgroundColor = '#d1d3ef';
+        cell.style.backgroundColor = 'rgba(232, 226, 228, 0.7)';
+        cell.style.color = '#ffffff';
       } else if (cell.textContent) {
         cell.textContent = `▢`;
-        cell.style.backgroundColor = '#c7e6d0';
+        cell.style.backgroundColor = '#ffe98a';
+        cell.style.color = '#782b44';
       }
       cell.className = `cell1 ${i}${j}`;
       player1_board.appendChild(cell);
@@ -375,12 +398,15 @@ function PopulateP2 (board = 'publicBoard') {
       let cell = document.createElement('div');
       cell.textContent = targetBoard[i][j];
       if (cell.textContent === 'X') {
-        cell.style.backgroundColor = '#f3bbbb';
+        cell.style.backgroundColor = '#c84771';
+        cell.style.color = '#ffffff';
       } else if (cell.textContent === '~') {
-        cell.style.backgroundColor = '#d1d3ef';
+        cell.style.backgroundColor = 'rgba(232, 226, 228, 0.7)';
+        cell.style.color = '#ffffff';
       } else if (cell.textContent) {
         cell.textContent = `▢`;
-        cell.style.backgroundColor = '#c7e6d0';
+        cell.style.backgroundColor = '#ffe98a';
+        cell.style.color = '#782b44';
       }
       cell.className = `cell2 ${i}${j}`;
       player2_board.appendChild(cell);
@@ -441,25 +467,31 @@ function winCheck () {
 }
 
 // Display controller
+function UpdateButtonsDisplay () {
+
+}
+
 function UpdateInfoDisplay () {
-  turn_info.textContent = currentPlayer === 'player1' ? `${player1.playerName}'s turn` : `${player2.playerName}'s turn`;
+  action_info.textContent = currentPlayer === 'player1' ? `${player1.playerName}'s turn` : `${player2.playerName}'s turn`;
 }
 
 // Test buttons
-player1_log.addEventListener('click', () => {
+/*player1_log.addEventListener('click', () => {
   GameOverModal();
   console.log(player1.gameboard);
 });
 
 player2_log.addEventListener('click', () => {
   console.log(player2.gameboard);
-});
+});*/
 
 
 // ROADMAP
-// Visual feedback : changer la couleur du bouton 'start' lorsque tous les navires sont placés, 'new game' plus en évidence lorsaue ça fait sens (partie pas encore lancée, ou partie terminée)
 // Faire l'UI
+  // Icones dans les boutons de choix de game mode, et éventuellement dans tous les boutons pour illustrer l'action
 // Afficher messages d'erreurs dans l'UI
+// Refactor ActivePlacement() : séparer la fonction de hover, la fonction click et le changement des boutons
+// Afficher la liste des navires pendant le jeu, pour connaître l'état de chacun (coulé/pas coulé)
 // Retirer boutons de test
 // Nettoyage du code
 // README.md
