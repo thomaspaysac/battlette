@@ -46,17 +46,38 @@ header {
     width: 150px;
     margin: 32px;
   }
+}
 
-  h1 {
-    margin: 0;
+footer {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding: 8px;
+  font-family: 'Open Sans', sans-serif;
+  background-color: #555555;
+  color: #eeeeee;
+
+  a {
+    font-family: 'Open Sans', sans-serif;
+    color: #eeeeee;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
   }
 }
 
 // Buttons
 #new-game_button, 
 #pvp-new-game_button {
-  //background-color: rgba(255, 0, 0, 0.43);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   width: 190px;
+  color: white;
   background-color: #d97e9c;
   border: 4px double #555555;
 
@@ -66,6 +87,10 @@ header {
 
   &:active {
     transform: translateY(2px);
+  }
+
+  img {
+    height: 24px;
   }
 }
 
@@ -276,4 +301,5 @@ header {
   height: 200px;
   background-color: white;
   border: 1px solid black;
+  z-index: 3;
 }

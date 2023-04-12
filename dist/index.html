@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/x-icon" href="./images/favicon.png">
   <title>Battlette</title>
   <script src="./main.js" defer></script>
 </head>
@@ -14,8 +15,6 @@
 <header>
   <div class="title">
     <div id="logo"></div>
-    <!--<h1>Battlette</h1>
-    <h3>Battleship with extra 'pain'</h3>-->
   </div>
   <div class="info-container">
     <!--<button id="player1-log">Player 1 Log</button>
@@ -26,8 +25,8 @@
     <button id="start-game_button" disabled>Start the battle / Next player</button>
   </div>
   <div class="game-mode-buttons">
-    <button id="new-game_button">Play against computer</button>
-    <button id="pvp-new-game_button">Player vs Player</button>
+    <button id="new-game_button"><img src="./images/1player.png" alt="">Play against computer</button>
+    <button id="pvp-new-game_button"><img src="./images/2players.png" alt="">Player vs Player</button>
   </div>
 </div>
 </header>
@@ -325,17 +324,22 @@
   </div>
 </section>
 
-  <div class="backdrop"></div>
+<footer>
+  <a href="https://www.pixiv.net/en/artworks/104036029">Background image by DemizuPosuka</a>
+  <a href="https://www.flaticon.com/free-icons/alone">Icons created by AbtoCreative - Flaticon</a>
+</footer>
 
-  <div class="game-over_modal">
-    <h3>Game Over</h3>
-    <p>Player 1 wins.</p>
-    <button class="close-modal_button">X</button>
-  </div>
+<div class="backdrop"></div>
 
-  <div class="pass-turn_modal">
-    <p>Player turn</p>
-    <button id="pass-turn_confirm-button">Continue</button>
-  </div>
+<div class="game-over_modal">
+  <h3>Game Over</h3>
+  <p>Player 1 wins.</p>
+  <button class="close-modal_button">X</button>
+</div>
+
+<div class="pass-turn_modal">
+  <p>Player turn</p>
+  <button id="pass-turn_confirm-button">Continue</button>
+</div>
 </body>
 </html>

@@ -450,13 +450,15 @@ function ActivateAttackOn (cellsArr, attacker, defender) {
 
 // Computer attack
 function computerAttack () {
-  player2.computerAttack(player1);
-  if (!winCheck()) {
-    currentPlayer = 'player1';
-    InitializeTurn(currentPlayer);
-  } else {
-    GameOverModal();
-  }
+  setTimeout(() => {
+    player2.computerAttack(player1);
+    if (!winCheck()) {
+      currentPlayer = 'player1';
+      InitializeTurn(currentPlayer);
+    } else {
+      GameOverModal();
+    }
+  }, '1000');
 }
 
 // Check win condition
@@ -489,7 +491,7 @@ player2_log.addEventListener('click', () => {
 // ROADMAP
 // Faire l'UI
   // Refaire modals
-  // Icones dans les boutons de choix de game mode, et éventuellement dans tous les boutons pour illustrer l'action
+// Footer
 // Afficher messages d'erreurs dans l'UI
 // Refactor ActivePlacement() : séparer la fonction de hover, la fonction click et le changement des boutons
 // Afficher la liste des navires pendant le jeu, pour connaître l'état de chacun (coulé/pas coulé)
