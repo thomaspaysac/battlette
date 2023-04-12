@@ -488,6 +488,7 @@ player2_log.addEventListener('click', () => {
 
 // ROADMAP
 // Faire l'UI
+  // Styliser boutons (hover, click)
   // Icones dans les boutons de choix de game mode, et éventuellement dans tous les boutons pour illustrer l'action
 // Afficher messages d'erreurs dans l'UI
 // Refactor ActivePlacement() : séparer la fonction de hover, la fonction click et le changement des boutons
