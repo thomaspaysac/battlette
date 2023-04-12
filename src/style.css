@@ -13,6 +13,17 @@ body {
   background: #782b44;
   background: linear-gradient(0deg, #782b44, #c84771); }
 
+.background-image {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  background-image: url("../dist/images/background.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: bottom 20% left 0;
+  z-index: -1;
+  filter: blur(4px) grayscale(25%); }
+
 header {
   width: 100%;
   padding: 0 50px;
@@ -170,8 +181,6 @@ header {
 
 .placing-ship-cell {
   background-color: rgba(255, 223, 87, 0.9); }
-  .placing-ship-cell:hover {
-    background-color: rgba(255, 223, 87, 0.9); }
 
 .placing-error {
   background-color: rgba(255, 0, 0, 0.423); }
