@@ -21,7 +21,7 @@ header {
   justify-content: space-between;
   align-items: center; }
   header #logo {
-    background-image: url("../dist/images/logo.png");
+    background-image: url("../dist/images/logo-big.png");
     background-size: contain;
     background-repeat: no-repeat;
     height: 150px;
@@ -32,7 +32,22 @@ header {
 
 #new-game_button,
 #pvp-new-game_button {
-  background-color: rgba(255, 0, 0, 0.43); }
+  width: 190px;
+  background-color: #d97e9c;
+  border: 4px double #555555; }
+  #new-game_button:hover,
+  #pvp-new-game_button:hover {
+    background-color: #c84771; }
+  #new-game_button:active,
+  #pvp-new-game_button:active {
+    transform: translateY(2px); }
+
+#start-game_button {
+  transition: background-color 500ms ease-out;
+  display: none; }
+  #start-game_button:active {
+    filter: brightness(85%);
+    transform: translateY(2px); }
 
 .info-container {
   height: fit-content;
@@ -53,21 +68,20 @@ header {
 .game-mode-buttons {
   display: flex;
   flex-direction: column;
-  gap: 25px; }
+  justify-content: center;
+  gap: 25px;
+  margin-right: 18px; }
 
 .battle-info {
-  margin-left: 24px;
+  margin-left: 18px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   gap: 24px; }
 
 .action-info {
-  font-size: 1.2rem;
+  font-size: 1.5rem;
   font-weight: 700; }
-
-#start-game_button {
-  display: none; }
 
 .battlefield {
   display: flex;
@@ -86,6 +100,7 @@ header {
 .player-info {
   background-color: #e8e2e4;
   width: 230px;
+  height: fit-content;
   padding: 16px;
   border-radius: 7px;
   border: 10px double #c84771; }

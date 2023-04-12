@@ -304,16 +304,16 @@ function ActivatePlacement (player, cellsArr, size, shipName, domElement, orient
       // Change the state of the 'start game' button depending on if the placement is finished
       if (gameMode === 'com' && player1.gameboard.shipList.length === 5) {
         start_game_button.disabled = false;
-        start_game_button.style.backgroundColor = 'green';
+        start_game_button.style.backgroundColor = '#80c180';
       }
       if (gameMode === 'pvp' && player1.gameboard.shipList.length === 5 && allShipsPlaced === false) {
         start_game_button.disabled = false;
-        start_game_button.style.backgroundColor = 'yellow';
+        start_game_button.style.backgroundColor = '#ffe98a';
         allShipsPlaced = true;
       } else if (gameMode === 'pvp' && player1.gameboard.shipList.length === 5 && player2.gameboard.shipList.length === 5) {
         start_game_button.disabled =  false;
         start_game_button.textContent = 'Start game';
-        start_game_button.style.backgroundColor = 'green';
+        start_game_button.style.backgroundColor = '#80c180';
       }
     });
   });}
@@ -489,6 +489,7 @@ player2_log.addEventListener('click', () => {
 // ROADMAP
 // Faire l'UI
   // Styliser boutons (hover, click)
+  // Refaire modals
   // Icones dans les boutons de choix de game mode, et éventuellement dans tous les boutons pour illustrer l'action
 // Afficher messages d'erreurs dans l'UI
 // Refactor ActivePlacement() : séparer la fonction de hover, la fonction click et le changement des boutons

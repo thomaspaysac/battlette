@@ -27,7 +27,7 @@ header {
   align-items: center;
 
   #logo {
-    background-image: url('../dist/images/logo.png');
+    background-image: url('../dist/images/logo-big.png');
     background-size: contain;
     background-repeat: no-repeat;
     height: 150px;
@@ -43,7 +43,28 @@ header {
 // Buttons
 #new-game_button, 
 #pvp-new-game_button {
-  background-color: rgba(255, 0, 0, 0.43);
+  //background-color: rgba(255, 0, 0, 0.43);
+  width: 190px;
+  background-color: #d97e9c;
+  border: 4px double #555555;
+
+  &:hover {
+    background-color: map-get($colors, accent-pink);
+  }
+
+  &:active {
+    transform: translateY(2px);
+  }
+}
+
+#start-game_button {
+  transition: background-color 500ms ease-out;
+  display: none;
+
+  &:active {
+    filter: brightness(85%);
+    transform: translateY(2px);
+  }
 }
 
 // Page components
@@ -69,11 +90,13 @@ header {
 .game-mode-buttons {
   display: flex;
   flex-direction: column;
+  justify-content: center;
   gap: 25px;
+  margin-right: 18px;
 }
 
 .battle-info {
-  margin-left: 24px;
+  margin-left: 18px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -81,12 +104,8 @@ header {
 }
 
 .action-info {
-  font-size: 1.2rem;
+  font-size: 1.5rem;
   font-weight: 700;
-}
-
-#start-game_button {
-  display: none;
 }
 
 .battlefield {
@@ -109,6 +128,7 @@ header {
 .player-info {
   background-color: map-get($colors, main-white);
   width: 230px;
+  height: fit-content;
   padding: 16px;
   border-radius: 7px;
   border: 10px double map-get($colors, accent-pink);
