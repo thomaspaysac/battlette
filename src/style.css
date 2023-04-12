@@ -22,7 +22,7 @@ body {
   background-size: cover;
   background-position: bottom 20% left 0;
   z-index: -1;
-  filter: blur(4px) grayscale(25%); }
+  filter: blur(4px) grayscale(30%); }
 
 header {
   width: 100%;
@@ -41,20 +41,31 @@ header {
 
 footer {
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
   position: absolute;
   bottom: 0;
   width: 100%;
   padding: 8px;
   font-family: 'Open Sans', sans-serif;
-  background-color: #555555;
-  color: #eeeeee; }
+  background-color: rgba(34, 34, 34, 0.5);
+  color: #cccccc; }
   footer a {
     font-family: 'Open Sans', sans-serif;
-    color: #eeeeee;
+    color: #cccccc;
     text-decoration: none; }
     footer a:hover {
       text-decoration: underline; }
+  footer .social-links {
+    font-family: 'Open Sans', sans-serif;
+    display: flex;
+    align-items: center;
+    gap: 8px; }
+    footer .social-links a {
+      display: flex;
+      align-items: center;
+      gap: 8px; }
+    footer .social-links img {
+      width: 1rem; }
 
 #new-game_button,
 #pvp-new-game_button {
@@ -62,7 +73,7 @@ footer {
   justify-content: space-between;
   align-items: center;
   width: 190px;
-  color: white;
+  color: #eeeeee;
   background-color: #d97e9c;
   border: 4px double #555555; }
   #new-game_button:hover,
@@ -192,7 +203,7 @@ footer {
   height: 40px;
   width: 40px;
   border: 1px solid rgba(0, 0, 0, 0.323);
-  background-color: rgba(232, 226, 228, 0.3);
+  background-color: rgba(232, 226, 228, 0.75);
   text-align: center;
   vertical-align: middle;
   font-size: 2rem;
@@ -220,14 +231,22 @@ footer {
 
 .game-over_modal {
   display: none;
+  flex-direction: column;
+  align-items: center;
+  font-size: 2rem;
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  border: 1px solid black;
-  background-color: grey;
+  border: 7px double #c84771;
+  border-radius: 4px;
+  background-color: #eeeeee;
   z-index: 3;
   padding: 3rem; }
+  .game-over_modal img {
+    width: 100px; }
+  .game-over_modal button {
+    font-family: 'Open Sans', sans-serif; }
 
 .pass-turn_modal {
   display: none;
@@ -241,8 +260,16 @@ footer {
   transform: translate(-50%, -50%);
   width: 350px;
   height: 200px;
-  background-color: white;
-  border: 1px solid black;
+  font-size: 2rem;
+  background-color: #eeeeee;
+  border: 4px solid #c84771;
   z-index: 3; }
+  .pass-turn_modal p {
+    margin: 0; }
+  .pass-turn_modal button {
+    background-color: #c84771;
+    color: #eeeeee;
+    padding: 8px;
+    font-size: 1.5rem; }
 
 /*# sourceMappingURL=style.css.map */

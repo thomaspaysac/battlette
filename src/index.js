@@ -46,11 +46,10 @@ function CloseModal(modal) {
 }
 
 function GameOverModal () {
-  
   const backdrop = document.querySelector('.backdrop');
   backdrop.style.display = 'block';
   backdrop.addEventListener('click', () => CloseModal('game-over_modal'));
-  document.querySelector('.game-over_modal').style.display = 'block';
+  document.querySelector('.game-over_modal').style.display = 'flex';
   if (currentPlayer === 'player1') {
     document.querySelector('.game-over_modal > p').textContent = 'Player 2 wins!';
     action_info.textContent = 'Player 2 wins!';
@@ -375,7 +374,7 @@ function PopulateP1 (board = 'privateBoard') {
         cell.style.backgroundColor = '#c84771';
         cell.style.color = '#ffffff';
       } else if (cell.textContent === '~') {
-        cell.style.backgroundColor = 'rgba(232, 226, 228, 0.7)';
+        cell.style.backgroundColor = 'rgba(192, 186, 188, 0.8)';
         cell.style.color = '#ffffff';
       } else if (cell.textContent) {
         cell.textContent = `▢`;
@@ -401,7 +400,7 @@ function PopulateP2 (board = 'publicBoard') {
         cell.style.backgroundColor = '#c84771';
         cell.style.color = '#ffffff';
       } else if (cell.textContent === '~') {
-        cell.style.backgroundColor = 'rgba(232, 226, 228, 0.7)';
+        cell.style.backgroundColor = 'rgba(192, 186, 188, 0.8)';
         cell.style.color = '#ffffff';
       } else if (cell.textContent) {
         cell.textContent = `▢`;
@@ -478,20 +477,20 @@ function UpdateInfoDisplay () {
 }
 
 // Test buttons
-/*player1_log.addEventListener('click', () => {
+player1_log.addEventListener('click', () => {
+  currentPlayer = 'player2';
   GameOverModal();
   console.log(player1.gameboard);
 });
 
 player2_log.addEventListener('click', () => {
+  currentPlayer = 'player1';
+  GameOverModal();
   console.log(player2.gameboard);
-});*/
+});
 
 
 // ROADMAP
-// Faire l'UI
-  // Refaire modals
-// Footer
 // Afficher messages d'erreurs dans l'UI
 // Refactor ActivePlacement() : séparer la fonction de hover, la fonction click et le changement des boutons
 // Afficher la liste des navires pendant le jeu, pour connaître l'état de chacun (coulé/pas coulé)
