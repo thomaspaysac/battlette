@@ -144,6 +144,7 @@ function changePlayerPlacement () {
 }
 
 function InitializeGame(p1name, p2name, mode) {
+  currentPlayer = 'player1';
   gameMode = mode;
   player1 = Player(p1name);
   player2 = Player(p2name);
