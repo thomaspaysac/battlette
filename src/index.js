@@ -506,7 +506,9 @@ player2_log.addEventListener('click', () => {
 
 
 // ROADMAP
+// Retirer messages d'erreurs de la console
 // Afficher la liste des navires pendant le jeu, pour connaître l'état de chacun (coulé/pas coulé)
+// Nettoyer dossier images
 // Retirer boutons de test
 // Nettoyage du code : commentaires, variables non utilisées
 // README.md
