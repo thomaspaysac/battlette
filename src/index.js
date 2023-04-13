@@ -212,8 +212,7 @@ function Player2PlaceShips () {
 }
 
 // Activate click on own board to place ships
-function ActivatePlacement (player, cellsArr, size, shipName, domElement, orientation = 'hor') {  
-  Player1PlaceShips();
+/*function ActivatePlacement (player, cellsArr, size, shipName, domElement, orientation = 'hor') {  
   // Check if the ship has already been placed, if yes then the function returns an error
   let placedShip = player.gameboard.shipList.find(el => el.name === shipName);
   if (placedShip) {
@@ -317,14 +316,125 @@ function ActivatePlacement (player, cellsArr, size, shipName, domElement, orient
       }
     });
   });}
+}*/
+
+function ActivatePlacement (player, cellsArr, size, shipName, domElement, orientation = 'hor') {
+  placeShipHover(player, cellsArr, size, orientation);
+  placeShipClick(player, cellsArr, size, shipName, domElement, orientation);
 }
 
+function placeShipHover (player, cellsArr, size, orientation = 'hor') {
+  let coloredCell;
+  cellsArr.forEach(el => {
+    if (orientation === 'hor') {
+      el.addEventListener('mouseover', () => {    
+        const startingY = el.className.slice(0,7);
+        const startingX = +el.className.slice(7,8);
+        if (player.gameboard.isValid(size, [+startingY.slice(-1), startingX])) {
+          for (let i = startingX; i < (+startingX + size); i++) {
+            coloredCell = document.getElementsByClassName(`${startingY}${i}`)[0];
+            coloredCell.classList.add('placing-ship-cell');
+          }
+          el.addEventListener('mouseout', (e) => {
+            cellsArr.forEach(el => el.classList.remove('placing-ship-cell'));
+          });
+        } else {
+          if (startingX + size > 10) {
+            for (let i = startingX; i < 10; i++) {
+              coloredCell = document.getElementsByClassName(`${startingY}${i}`)[0];
+              coloredCell.classList.add('placing-error');
+            }
+          } else {
+            for (let i = startingX; i < startingX + size; i++) {
+              coloredCell = document.getElementsByClassName(`${startingY}${i}`)[0];
+              coloredCell.classList.add('placing-error');
+            }
+          }
+          
+          el.addEventListener('mouseout', (e) => {
+            cellsArr.forEach(el => el.classList.remove('placing-error'));
+          });
+        }
+      });
+    } else {
+      el.addEventListener('mouseover', (e) => {    
+        const Ycoord = +el.className.slice(6,7);
+        const startingX = +el.className.slice(7,8);
+        const cellName = el.className.slice(0,6);
+        if (player.gameboard.isValid(size, [Ycoord, startingX], 'ver')) {
+          for (let i = Ycoord; i < (Ycoord + size); i++) {
+            coloredCell = document.getElementsByClassName(`${cellName}${i}${startingX}`)[0];
+            coloredCell.classList.add('placing-ship-cell');
+          }
+          el.addEventListener('mouseout', (e) => {
+            cellsArr.forEach(el => el.classList.remove('placing-ship-cell'));
+          });
+        } else {
+          if (Ycoord + size > 10){
+            for (let i = Ycoord; i < 10; i++) {
+              coloredCell = document.getElementsByClassName(`${cellName}${i}${startingX}`)[0];
+              coloredCell.classList.add('placing-error');
+            }
+          } else {
+            for (let i = Ycoord; i < Ycoord + size; i++) {
+              coloredCell = document.getElementsByClassName(`${cellName}${i}${startingX}`)[0];
+              coloredCell.classList.add('placing-error');
+            }
+          }
+          el.addEventListener('mouseout', (e) => {
+            cellsArr.forEach(el => el.classList.remove('placing-error'));
+          });
+        }
+      });
+    }
+  });
+}
+
+function placeShipClick (player, cellsArr, size, shipName, domElement, orientation = 'hor') {
+  cellsArr.forEach(el => {
+    el.addEventListener('click', (e) => {
+      const targetCell = (el.className.slice(6, 8)).split('');
+      const targetCoordinates = [+targetCell[0], +targetCell[1]];
+      player.gameboard.placeShip(size, targetCoordinates, shipName, orientation);
+      if (player === player1) {
+        p1Cells = PopulateP1();
+      } else {
+        p2Cells = PopulateP2('privateBoard');
+      }
+      const shipListName = document.querySelector(domElement);
+      shipListName.style.color = 'grey';
+      const horButton = document.querySelector(`${domElement}  .hor`);
+      const verButton = document.querySelector(`${domElement}  .ver`);
+      horButton.style.display = 'none';
+      verButton.style.display = 'none';
+      updateStartButton();
+    });
+  });
+}
+
+function updateStartButton () {
+  if (gameMode === 'com' && player1.gameboard.shipList.length === 5) {
+    start_game_button.disabled = false;
+    start_game_button.style.backgroundColor = '#80c180';
+  }
+  if (gameMode === 'pvp' && player1.gameboard.shipList.length === 5 && allShipsPlaced === false) {
+    start_game_button.disabled = false;
+    start_game_button.style.backgroundColor = '#ffe98a';
+    allShipsPlaced = true;
+  } else if (gameMode === 'pvp' && player1.gameboard.shipList.length === 5 && player2.gameboard.shipList.length === 5) {
+    start_game_button.disabled =  false;
+    start_game_button.textContent = 'Start game';
+    start_game_button.style.backgroundColor = '#80c180';
+  }
+}
+
+
+
+// Game flow functions
 function StartGame () {
   // Check if all ships have been placed before launching the game
   if (player1.gameboard.shipList.length !== 5) {
     throw new Error('You must still place pastries!');
-  } else if (winCheck()) {
-    throw new Error ("The game is already over");
   } else {
     start_game_button.style.display = 'none';
     start_game_button.disabled = true;
@@ -333,7 +443,6 @@ function StartGame () {
   }
 }
 
-// Main game flow, alternate turn between players and enable attacking the opponent's board
 function InitializeTurn (currentPlayer) {
   UpdateInfoDisplay();
   if (gameMode === 'com') {
