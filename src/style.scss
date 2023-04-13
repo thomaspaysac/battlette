@@ -200,6 +200,12 @@ footer {
   text-align: end;
 }
 
+#player1-score,
+#player2-score {
+  font-family: 'Open Sans', sans-serif;
+  margin-bottom: 8px;
+}
+
 #player1-ships, 
 #player2-ships {
   display: none;

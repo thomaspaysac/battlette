@@ -11,6 +11,9 @@ let p2Cells;
 let gameMode;
 let currentPlayer = 'player1';
 let allShipsPlaced= false;
+  // Using global variables to keep the score from one battle to the next; return to 0 on page refresh
+let playersScores = [0, 0];
+let player2Score = 0;
 
 // DOM Elements
 const new_game_button = document.getElementById('new-game_button');
@@ -53,9 +56,11 @@ function GameOverModal () {
   if (currentPlayer === 'player1') {
     document.querySelector('.game-over_modal > p').textContent = 'Player 2 wins!';
     action_info.textContent = 'Player 2 wins!';
+    UpdateScore(player2);
   } else {
     document.querySelector('.game-over_modal > p').textContent = 'Player 1 wins!';
     action_info.textContent = 'Player 1 wins!';
+    UpdateScore(player1);
   }
 }
 
@@ -117,6 +122,7 @@ function resetDOM (player = 'player1') {
   const ship_list = document.querySelectorAll(`#${player}-ships li`);
   const orientation_buttons = document.querySelectorAll(`#${player}-ships img`);
   for (let i = 0; i < ship_list.length; i++) {
+    ship_list[i].style.display = 'flex';
     ship_list[i].style.color = 'black';
   }
   for (let i = 0; i < orientation_buttons.length; i++) {
@@ -212,118 +218,12 @@ function Player2PlaceShips () {
 }
 
 // Activate click on own board to place ships
-/*function ActivatePlacement (player, cellsArr, size, shipName, domElement, orientation = 'hor') {  
-  // Check if the ship has already been placed, if yes then the function returns an error
-  let placedShip = player.gameboard.shipList.find(el => el.name === shipName);
-  if (placedShip) {
-    throw new Error('This pastrie is already in place.');
-  
-  } else {
-  // Display ship size overlay on hover
-  let coloredCell;
-  cellsArr.forEach(el => {
-    if (orientation === 'hor') {
-      el.addEventListener('mouseover', () => {    
-        const startingY = el.className.slice(0,7);
-        const startingX = +el.className.slice(7,8);
-        if (player.gameboard.isValid(size, [+startingY.slice(-1), startingX])) {
-          for (let i = startingX; i < (+startingX + size); i++) {
-            coloredCell = document.getElementsByClassName(`${startingY}${i}`)[0];
-            coloredCell.classList.add('placing-ship-cell');
-          }
-          el.addEventListener('mouseout', (e) => {
-            cellsArr.forEach(el => el.classList.remove('placing-ship-cell'));
-          });
-        } else {
-          if (startingX + size > 10) {
-            for (let i = startingX; i < 10; i++) {
-              coloredCell = document.getElementsByClassName(`${startingY}${i}`)[0];
-              coloredCell.classList.add('placing-error');
-            }
-          } else {
-            for (let i = startingX; i < startingX + size; i++) {
-              coloredCell = document.getElementsByClassName(`${startingY}${i}`)[0];
-              coloredCell.classList.add('placing-error');
-            }
-          }
-          
-          el.addEventListener('mouseout', (e) => {
-            cellsArr.forEach(el => el.classList.remove('placing-error'));
-          });
-        }
-      });
-    } else {
-      el.addEventListener('mouseover', (e) => {    
-        const Ycoord = +el.className.slice(6,7);
-        const startingX = +el.className.slice(7,8);
-        const cellName = el.className.slice(0,6);
-        if (player.gameboard.isValid(size, [Ycoord, startingX], 'ver')) {
-          for (let i = Ycoord; i < (Ycoord + size); i++) {
-            coloredCell = document.getElementsByClassName(`${cellName}${i}${startingX}`)[0];
-            coloredCell.classList.add('placing-ship-cell');
-          }
-          el.addEventListener('mouseout', (e) => {
-            cellsArr.forEach(el => el.classList.remove('placing-ship-cell'));
-          });
-        } else {
-          if (Ycoord + size > 10){
-            for (let i = Ycoord; i < 10; i++) {
-              coloredCell = document.getElementsByClassName(`${cellName}${i}${startingX}`)[0];
-              coloredCell.classList.add('placing-error');
-            }
-          } else {
-            for (let i = Ycoord; i < Ycoord + size; i++) {
-              coloredCell = document.getElementsByClassName(`${cellName}${i}${startingX}`)[0];
-              coloredCell.classList.add('placing-error');
-            }
-          }
-          el.addEventListener('mouseout', (e) => {
-            cellsArr.forEach(el => el.classList.remove('placing-error'));
-          });
-        }
-      });
-    }
-
-    // Place ship when clicking
-    el.addEventListener('click', (e) => {
-      const targetCell = (el.className.slice(6, 8)).split('');
-      const targetCoordinates = [+targetCell[0], +targetCell[1]];
-      player.gameboard.placeShip(size, targetCoordinates, shipName, orientation);
-      if (player === player1) {
-        p1Cells = PopulateP1();
-      } else {
-        p2Cells = PopulateP2('privateBoard');
-      }
-      const shipListName = document.querySelector(domElement);
-      shipListName.style.color = 'grey';
-      const horButton = document.querySelector(`${domElement}  .hor`);
-      const verButton = document.querySelector(`${domElement}  .ver`);
-      horButton.style.display = 'none';
-      verButton.style.display = 'none';
-      // Change the state of the 'start game' button depending on if the placement is finished
-      if (gameMode === 'com' && player1.gameboard.shipList.length === 5) {
-        start_game_button.disabled = false;
-        start_game_button.style.backgroundColor = '#80c180';
-      }
-      if (gameMode === 'pvp' && player1.gameboard.shipList.length === 5 && allShipsPlaced === false) {
-        start_game_button.disabled = false;
-        start_game_button.style.backgroundColor = '#ffe98a';
-        allShipsPlaced = true;
-      } else if (gameMode === 'pvp' && player1.gameboard.shipList.length === 5 && player2.gameboard.shipList.length === 5) {
-        start_game_button.disabled =  false;
-        start_game_button.textContent = 'Start game';
-        start_game_button.style.backgroundColor = '#80c180';
-      }
-    });
-  });}
-}*/
-
 function ActivatePlacement (player, cellsArr, size, shipName, domElement, orientation = 'hor') {
-  placeShipHover(player, cellsArr, size, orientation);
+  placeShipHighlight(player, cellsArr, size, orientation);
   placeShipClick(player, cellsArr, size, shipName, domElement, orientation);
 }
 
-function placeShipHover (player, cellsArr, size, orientation = 'hor') {
+function placeShipHighlight (player, cellsArr, size, orientation = 'hor') {
   let coloredCell;
   cellsArr.forEach(el => {
     if (orientation === 'hor') {
@@ -402,7 +302,8 @@ function placeShipClick (player, cellsArr, size, shipName, domElement, orientati
         p2Cells = PopulateP2('privateBoard');
       }
       const shipListName = document.querySelector(domElement);
-      shipListName.style.color = 'grey';
+      //shipListName.style.color = 'grey';
+      shipListName.style.display = 'none';
       const horButton = document.querySelector(`${domElement}  .hor`);
       const verButton = document.querySelector(`${domElement}  .ver`);
       horButton.style.display = 'none';
@@ -577,6 +478,16 @@ function winCheck () {
   }
 }
 
+function UpdateScore (player) {
+  if (player === player1) {
+    playersScores[0]++;
+    document.getElementById('player1-score').textContent = `Score: ${playersScores[0]}`;
+  } else {
+    playersScores[1]++;
+    document.getElementById('player2-score').textContent = `Score: ${playersScores[1]}`;
+  }
+}
+
 // Display controller
 function UpdateInfoDisplay () {
   action_info.textContent = currentPlayer === 'player1' ? `${player1.playerName}'s turn` : `${player2.playerName}'s turn`;
@@ -584,22 +495,18 @@ function UpdateInfoDisplay () {
 
 // Test buttons
 /*player1_log.addEventListener('click', () => {
-  currentPlayer = 'player2';
+  currentPlayer = 'player1';
   GameOverModal();
-  console.log(player1.gameboard);
 });
 
 player2_log.addEventListener('click', () => {
-  currentPlayer = 'player1';
+  currentPlayer = 'player2';
   GameOverModal();
-  console.log(player2.gameboard);
 });*/
 
 
 // ROADMAP
-// Ajouter score
 // Retirer messages d'erreurs de la console
-// Refactor ActivePlacement() : séparer la fonction de hover, la fonction click et le changement des boutons
 // Afficher la liste des navires pendant le jeu, pour connaître l'état de chacun (coulé/pas coulé)
 // Nettoyer dossier images
 // Retirer boutons de test

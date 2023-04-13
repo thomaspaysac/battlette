@@ -14,8 +14,6 @@ const Player = (name) => {
       let coord = findValidMove(player.gameboard.privateBoard);
       this.attack(player, coord[0], coord[1]);
     },
-
-    score: 0,
   };
 };
 
