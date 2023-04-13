@@ -213,6 +213,7 @@ function Player2PlaceShips () {
 
 // Activate click on own board to place ships
 function ActivatePlacement (player, cellsArr, size, shipName, domElement, orientation = 'hor') {  
+  Player1PlaceShips();
   // Check if the ship has already been placed, if yes then the function returns an error
   let placedShip = player.gameboard.shipList.find(el => el.name === shipName);
   if (placedShip) {
@@ -468,16 +469,12 @@ function winCheck () {
 }
 
 // Display controller
-function UpdateButtonsDisplay () {
-
-}
-
 function UpdateInfoDisplay () {
   action_info.textContent = currentPlayer === 'player1' ? `${player1.playerName}'s turn` : `${player2.playerName}'s turn`;
 }
 
 // Test buttons
-player1_log.addEventListener('click', () => {
+/*player1_log.addEventListener('click', () => {
   currentPlayer = 'player2';
   GameOverModal();
   console.log(player1.gameboard);
@@ -487,16 +484,17 @@ player2_log.addEventListener('click', () => {
   currentPlayer = 'player1';
   GameOverModal();
   console.log(player2.gameboard);
-});
+});*/
 
 
 // ROADMAP
-// Afficher messages d'erreurs dans l'UI
+// Ajouter score
+// Retirer messages d'erreurs de la console
 // Refactor ActivePlacement() : séparer la fonction de hover, la fonction click et le changement des boutons
 // Afficher la liste des navires pendant le jeu, pour connaître l'état de chacun (coulé/pas coulé)
 // Nettoyer dossier images
 // Retirer boutons de test
-// Nettoyage du code
+// Nettoyage du code : commentaires, variables non utilisées
 // README.md
 
 // BUGS
