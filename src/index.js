@@ -102,7 +102,7 @@ pvp_new_game_button.addEventListener('click', () => {
 
 start_game_button.addEventListener('click', () => {
   if (gameMode === 'com') {
-    player1_ships.style.display = 'none';
+    //player1_ships.style.display = 'none';
     StartGame();
   } else if (gameMode === 'pvp' && player2.gameboard.shipList.length === 5 && player2.gameboard.shipList.length === 5) { 
     player2_ships.style.display = 'none';
@@ -118,6 +118,7 @@ start_game_button.addEventListener('click', () => {
   }
 });
 
+// DOM manipulation functions
 function resetDOM (player = 'player1') {
   const ship_list = document.querySelectorAll(`#${player}-ships li`);
   const orientation_buttons = document.querySelectorAll(`#${player}-ships img`);
@@ -133,6 +134,33 @@ function resetDOM (player = 'player1') {
   }
 }
 
+function RestoreShipsList () {
+  document.querySelectorAll('.action-descriptor').forEach(el => {
+    el.textContent = '';
+  });
+  player1_ships.style.display = 'block';
+  const p1ShipList = document.querySelectorAll('#player1-ships li');
+  p1ShipList.forEach(el => {
+    el.style.display = 'flex';
+  });
+  player2_ships.style.display = 'block';
+  const p2ShipList = document.querySelectorAll('#player2-ships li');
+  p2ShipList.forEach(el => {
+    el.style.display = 'flex';
+  });
+  if (gameMode === 'com') {
+    document.querySelectorAll('.hor').forEach(el => {
+      el.style.display = 'none';
+    });
+    document.querySelectorAll('.ver').forEach(el => {
+      el.style.display = 'none';
+    });
+
+  }
+}
+
+
+
 function changePlayerPlacement () {
   if (player1.gameboard.shipList.length !== 5) {
     throw new Error ('Player 1 must first place all his/her pastries.');
@@ -146,6 +174,7 @@ function changePlayerPlacement () {
 function InitializeGame(p1name, p2name, mode) {
   currentPlayer = 'player1';
   gameMode = mode;
+  allShipsPlaced = false;
   player1 = Player(p1name);
   player2 = Player(p2name);
   p1Cells = PopulateP1();
@@ -293,7 +322,7 @@ function placeShipHighlight (player, cellsArr, size, orientation = 'hor') {
 
 function placeShipClick (player, cellsArr, size, shipName, domElement, orientation = 'hor') {
   cellsArr.forEach(el => {
-    el.addEventListener('click', (e) => {
+    el.addEventListener('click', () => {
       const targetCell = (el.className.slice(6, 8)).split('');
       const targetCoordinates = [+targetCell[0], +targetCell[1]];
       player.gameboard.placeShip(size, targetCoordinates, shipName, orientation);
@@ -341,6 +370,7 @@ function StartGame () {
     start_game_button.style.display = 'none';
     start_game_button.disabled = true;
     start_game_button.style.backgroundColor = 'buttonface';
+    RestoreShipsList();
     InitializeTurn(currentPlayer);
   }
 }
@@ -495,24 +525,22 @@ function UpdateInfoDisplay () {
 }
 
 // Test buttons
-/*player1_log.addEventListener('click', () => {
-  currentPlayer = 'player1';
-  GameOverModal();
+player1_log.addEventListener('click', () => {
+  console.log(player1.gameboard);
 });
 
 player2_log.addEventListener('click', () => {
-  currentPlayer = 'player2';
-  GameOverModal();
-});*/
+  console.log(player2.gameboard);
+});
 
 
 // ROADMAP
 // Retirer messages d'erreurs de la console
 // Afficher la liste des navires pendant le jeu, pour connaître l'état de chacun (coulé/pas coulé)
-// Nettoyer dossier images
 // Retirer boutons de test
 // Nettoyage du code : commentaires, variables non utilisées
 // README.md
 
 // BUGS
+// Messages d'erreur à chaque placement de navire lorsqu'on recommence une partie
 // Bug d'affichage lorsqu'on clique sur un autre navire avant sans avoir cliqué au préalable pour placer le premier : remove eventListener en début de fonction ?

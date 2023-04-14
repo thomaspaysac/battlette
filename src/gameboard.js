@@ -32,7 +32,7 @@ const Gameboard = () => {
     shipList: [],
 
     placeShip: function (size, startPos, shipName = 'Unnamed ship', direction = 'hor') {
-      if (!this.isValid(size, startPos, direction)) {
+      if (this.isValid(size, startPos, direction) === false) {
         throw new Error('Cannot place ship: out of bounds or space already occupied.');
       } else {
         let newShip = Ship(size, shipName);

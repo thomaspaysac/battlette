@@ -164,6 +164,9 @@ footer {
   font-family: 'Open Sans', sans-serif;
   margin-bottom: 8px; }
 
+.action-descriptor {
+  font-family: 'Open Sans', sans-serif; }
+
 #player1-ships,
 #player2-ships {
   display: none;
