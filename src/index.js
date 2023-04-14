@@ -461,6 +461,7 @@ function ActivateAttackOn (cellsArr, attacker, defender) {
   cellsArr.forEach(el => {
     el.addEventListener('click', (e) => {
       const targetCell = (el.className.slice(-2)).split('');
+      let attackedShip = defender.gameboard.privateBoard[targetCell[0]][targetCell[1]];
       attacker.attack(defender, targetCell[0], targetCell[1]);
       // Reveal square when attacked
       if (currentPlayer === 'player1') {
@@ -502,6 +503,12 @@ function computerAttack () {
   }, '1000');
 }
 
+// Check for sunk ship
+function sunkCheck (shipName) {
+  const targetShip = player1.gameboard.shipList.find(({ name }) => name === shipName);
+  targetShip.isSunk();
+}
+
 // Check win condition
 function winCheck () {
   if (player1.gameboard.getStatus() || player2.gameboard.getStatus()) {
@@ -524,9 +531,14 @@ function UpdateInfoDisplay () {
   action_info.textContent = currentPlayer === 'player1' ? `${player1.playerName}'s turn` : `${player2.playerName}'s turn`;
 }
 
+function UpdateShipList () {
+
+}
+
 // Test buttons
 player1_log.addEventListener('click', () => {
   console.log(player1.gameboard);
+  sunkCheck('Carrier');
 });
 
 player2_log.addEventListener('click', () => {
