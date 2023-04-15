@@ -125,6 +125,7 @@ function resetDOM (player = 'player1') {
   for (let i = 0; i < ship_list.length; i++) {
     ship_list[i].style.display = 'flex';
     ship_list[i].style.color = 'black';
+    ship_list[i].style.textDecoration = 'none';
   }
   for (let i = 0; i < orientation_buttons.length; i++) {
     orientation_buttons[i].style.display = 'block';
@@ -136,7 +137,7 @@ function resetDOM (player = 'player1') {
 
 function RestoreShipsList () {
   document.querySelectorAll('.action-descriptor').forEach(el => {
-    el.textContent = '';
+    el.textContent = 'Your menu:';
   });
   player1_ships.style.display = 'block';
   const p1ShipList = document.querySelectorAll('#player1-ships li');
@@ -467,6 +468,9 @@ function ActivateAttackOn (cellsArr, attacker, defender) {
       if (currentPlayer === 'player1') {
         if (defender.gameboard.privateBoard[targetCell[0]][targetCell[1]] === 'X') {
           defender.gameboard.publicBoard[targetCell[0]][targetCell[1]] = 'X';
+          if (sunkCheck(player2, attackedShip)) {
+            UpdateShipList('p2', attackedShip);
+          }
         } else {
           defender.gameboard.publicBoard[targetCell[0]][targetCell[1]] = '~';
         }
@@ -475,6 +479,9 @@ function ActivateAttackOn (cellsArr, attacker, defender) {
       } else {
         if (defender.gameboard.privateBoard[targetCell[0]][targetCell[1]] === 'X') {
           defender.gameboard.publicBoard[targetCell[0]][targetCell[1]] = 'X';
+          if (sunkCheck(player1, attackedShip)) {
+            UpdateShipList('p1', attackedShip);
+          }
         } else {
           defender.gameboard.publicBoard[targetCell[0]][targetCell[1]] = '~';
         }
@@ -504,9 +511,9 @@ function computerAttack () {
 }
 
 // Check for sunk ship
-function sunkCheck (shipName) {
-  const targetShip = player1.gameboard.shipList.find(({ name }) => name === shipName);
-  targetShip.isSunk();
+function sunkCheck (player, shipName) {
+  const targetShip = player.gameboard.shipList.find(({ name }) => name === shipName);
+  return targetShip.isSunk();
 }
 
 // Check win condition
@@ -531,26 +538,28 @@ function UpdateInfoDisplay () {
   action_info.textContent = currentPlayer === 'player1' ? `${player1.playerName}'s turn` : `${player2.playerName}'s turn`;
 }
 
-function UpdateShipList () {
-
+function UpdateShipList (player, ship) {
+  const shipName = ship.toLowerCase();
+  let shipListItem = document.querySelector(`.${player}-${shipName}`);
+  shipListItem.style.color = '#c84771';
+  shipListItem.style.textDecoration = 'line-through';
 }
 
 // Test buttons
-player1_log.addEventListener('click', () => {
+/*player1_log.addEventListener('click', () => {
   console.log(player1.gameboard);
   sunkCheck('Carrier');
 });
 
 player2_log.addEventListener('click', () => {
   console.log(player2.gameboard);
-});
+});*/
 
 
 // ROADMAP
 // Retirer messages d'erreurs de la console
-// Afficher la liste des navires pendant le jeu, pour connaître l'état de chacun (coulé/pas coulé)
 // Retirer boutons de test
-// Nettoyage du code : commentaires, variables non utilisées
+// Nettoyage du code : commentaires, variables non utilisées, réorganisation selon la fonction remplie
 // README.md
 
 // BUGS
