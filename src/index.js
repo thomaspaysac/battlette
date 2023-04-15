@@ -557,6 +557,7 @@ player2_log.addEventListener('click', () => {
 
 
 // ROADMAP
+// Vs com : liste des bateaux a reset
 // Retirer messages d'erreurs de la console
 // Retirer boutons de test
 // Nettoyage du code : commentaires, variables non utilisées, réorganisation selon la fonction remplie
