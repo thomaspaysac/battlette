@@ -11,7 +11,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.(css|mp3)$/i,
+        test: /\.css$/i,
         use: ['style-loader', 'css-loader'],
       },
     ],

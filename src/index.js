@@ -562,10 +562,9 @@ function soundEffect (src) {
   };
 }
 
-import sound from '../dist/sounds/game_start.mp3';
-const game_start_sound = new soundEffect(sound);
-const turn_change_sound = new soundEffect('/sounds/turn_change.mp3');
-const victory_sound = new soundEffect('/sounds/victory.mp3');
+const game_start_sound = new soundEffect('./sounds/game_start.mp3');
+const turn_change_sound = new soundEffect('./sounds/turn_change.mp3');
+const victory_sound = new soundEffect('./sounds/victory.mp3');
 
 
 // Test buttons
