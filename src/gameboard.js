@@ -102,12 +102,14 @@ const Gameboard = () => {
 
     receiveAttack: function (targetPos) {
      if (this.privateBoard[targetPos[0]][targetPos[1]] === undefined) {
+      miss_sound.play();
       this.privateBoard[targetPos[0]][targetPos[1]] = '~';
       return 'You missed';
      } else if (this.privateBoard[targetPos[0]][targetPos[1]] === '~' || this.privateBoard[targetPos[0]][targetPos[1]] === 'X') {
       throw new Error('You cannot attack the same spot twice');
      } else {
       let target = this.shipList.find(el => el.name === this.privateBoard[targetPos[0]][targetPos[1]]);
+      touche_sound.play();
       target.hits++;
       this.privateBoard[targetPos[0]][targetPos[1]] = 'X';
       if (target.isSunk()) {
@@ -124,5 +126,24 @@ const Gameboard = () => {
 
   };
 };
+
+function soundEffect (src) {
+  this.sound = document.createElement("audio");
+  this.sound.src = src;
+  this.sound.setAttribute("preload", "auto");
+  this.sound.setAttribute("controls", "none");
+  this.sound.style.display = "none";
+  document.body.appendChild(this.sound);
+  this.play = function(){
+    this.sound.play();
+  };
+  this.stop = function(){
+    this.sound.pause();
+  };
+}
+
+const touche_sound = new soundEffect('../dist/sounds/touche.mp3');
+const miss_sound = new soundEffect('../dist/sounds/miss.mp3');
+
 
 export { Gameboard };

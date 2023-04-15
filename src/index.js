@@ -49,6 +49,7 @@ function CloseModal(modal) {
 }
 
 function GameOverModal () {
+  victory_sound.play();
   const backdrop = document.querySelector('.backdrop');
   backdrop.style.display = 'block';
   backdrop.addEventListener('click', () => CloseModal('game-over_modal'));
@@ -65,6 +66,7 @@ function GameOverModal () {
 }
 
 function PassTurnModal () {
+  turn_change_sound.play();
   p1Cells = PopulateP1('publicBoard');
   p2Cells = PopulateP2('publicBoard');
   const backdrop = document.querySelector('.backdrop');
@@ -80,6 +82,7 @@ function PassTurnModal () {
 // Initialize game functions
 new_game_button.addEventListener('click', () => {
   resetDOM();
+  resetDOM('player2');
   InitializeGame('Player', 'Computer', 'com');
   placementPhase();
   action_info.textContent = 'Place each one of your pastries.';
@@ -105,7 +108,7 @@ start_game_button.addEventListener('click', () => {
     //player1_ships.style.display = 'none';
     StartGame();
   } else if (gameMode === 'pvp' && player2.gameboard.shipList.length === 5 && player2.gameboard.shipList.length === 5) { 
-    player2_ships.style.display = 'none';
+    //player2_ships.style.display = 'none';
     StartGame();
   }
   else {
@@ -156,11 +159,8 @@ function RestoreShipsList () {
     document.querySelectorAll('.ver').forEach(el => {
       el.style.display = 'none';
     });
-
   }
 }
-
-
 
 function changePlayerPlacement () {
   if (player1.gameboard.shipList.length !== 5) {
@@ -368,6 +368,7 @@ function StartGame () {
   if (player1.gameboard.shipList.length !== 5) {
     throw new Error('You must still place pastries!');
   } else {
+    game_start_sound.play();
     start_game_button.style.display = 'none';
     start_game_button.disabled = true;
     start_game_button.style.backgroundColor = 'buttonface';
@@ -545,6 +546,27 @@ function UpdateShipList (player, ship) {
   shipListItem.style.textDecoration = 'line-through';
 }
 
+// Sound controller
+function soundEffect (src) {
+  this.sound = document.createElement("audio");
+  this.sound.src = src;
+  this.sound.setAttribute("preload", "auto");
+  this.sound.setAttribute("controls", "none");
+  this.sound.style.display = "none";
+  document.body.appendChild(this.sound);
+  this.play = function(){
+    this.sound.play();
+  };
+  this.stop = function(){
+    this.sound.pause();
+  };
+}
+
+const game_start_sound = new soundEffect('../dist/sounds/game_start.mp3');
+const turn_change_sound = new soundEffect('../dist/sounds/turn_change.mp3');
+const victory_sound = new soundEffect('../dist/sounds/victory.mp3');
+
+
 // Test buttons
 /*player1_log.addEventListener('click', () => {
   console.log(player1.gameboard);
@@ -557,7 +579,6 @@ player2_log.addEventListener('click', () => {
 
 
 // ROADMAP
-// Vs com : liste des bateaux a reset
 // Retirer messages d'erreurs de la console
 // Retirer boutons de test
 // Nettoyage du code : commentaires, variables non utilisées, réorganisation selon la fonction remplie
