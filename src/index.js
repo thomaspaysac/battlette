@@ -66,7 +66,6 @@ function GameOverModal () {
 }
 
 function PassTurnModal () {
-  turn_change_sound.play();
   p1Cells = PopulateP1('publicBoard');
   p2Cells = PopulateP2('publicBoard');
   const backdrop = document.querySelector('.backdrop');
@@ -564,13 +563,11 @@ function soundEffect (src) {
 
 import game_start_mp3 from '../dist/sounds/game_start.mp3';
 const game_start_sound = new soundEffect(game_start_mp3);
-import turn_change_mp3 from '../dist/sounds/turn_change.mp3';
-const turn_change_sound = new soundEffect(turn_change_mp3);
 import victory_mp3 from '../dist/sounds/victory.mp3';
 const victory_sound = new soundEffect(victory_mp3);
 //const game_start_sound = new soundEffect('./sounds/game_start.mp3');
 
-
+export { soundEffect };
 
 // Test buttons
 /*player1_log.addEventListener('click', () => {

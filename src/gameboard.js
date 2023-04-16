@@ -1,4 +1,5 @@
 import { Ship } from './ship.js';
+import { soundEffect } from './index.js';
 
 
 const Gameboard = () => {
@@ -127,23 +128,11 @@ const Gameboard = () => {
   };
 };
 
-function soundEffect (src) {
-  this.sound = document.createElement("audio");
-  this.sound.src = src;
-  this.sound.setAttribute("preload", "auto");
-  this.sound.setAttribute("controls", "none");
-  this.sound.style.display = "none";
-  document.body.appendChild(this.sound);
-  this.play = function(){
-    this.sound.play();
-  };
-  this.stop = function(){
-    this.sound.pause();
-  };
-}
+import touche_mp3 from '../dist/sounds/touche.mp3';
+const touche_sound = new soundEffect(touche_mp3);
 
-const touche_sound = new soundEffect('../dist/sounds/touche.mp3');
-const miss_sound = new soundEffect('../dist/sounds/miss.mp3');
+import miss_mp3 from '../dist/sounds/miss.mp3';
+const miss_sound = new soundEffect(miss_mp3);
 
 
 export { Gameboard };
