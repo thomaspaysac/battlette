@@ -1,6 +1,4 @@
 import './style.css';
-import { Ship } from './ship.js';
-import { Gameboard } from './gameboard';
 import { Player } from './player';
 
 // Gobal variables
@@ -11,9 +9,8 @@ let p2Cells;
 let gameMode;
 let currentPlayer = 'player1';
 let allShipsPlaced= false;
-  // Using global variables to keep the score from one battle to the next; return to 0 on page refresh
+  // Using global variable to keep the score from one battle to the next; return to 0 on page refresh
 let playersScores = [0, 0];
-let player2Score = 0;
 
 // DOM Elements
 const new_game_button = document.getElementById('new-game_button');
@@ -104,10 +101,8 @@ pvp_new_game_button.addEventListener('click', () => {
 
 start_game_button.addEventListener('click', () => {
   if (gameMode === 'com') {
-    //player1_ships.style.display = 'none';
     StartGame();
   } else if (gameMode === 'pvp' && player2.gameboard.shipList.length === 5 && player2.gameboard.shipList.length === 5) { 
-    //player2_ships.style.display = 'none';
     StartGame();
   }
   else {
@@ -565,24 +560,12 @@ import game_start_mp3 from '../dist/sounds/game_start.mp3';
 const game_start_sound = new soundEffect(game_start_mp3);
 import victory_mp3 from '../dist/sounds/victory.mp3';
 const victory_sound = new soundEffect(victory_mp3);
-//const game_start_sound = new soundEffect('./sounds/game_start.mp3');
 
 export { soundEffect };
-
-// Test buttons
-/*player1_log.addEventListener('click', () => {
-  console.log(player1.gameboard);
-  sunkCheck('Carrier');
-});
-
-player2_log.addEventListener('click', () => {
-  console.log(player2.gameboard);
-});*/
 
 
 // ROADMAP
 // Retirer messages d'erreurs de la console
-// Retirer boutons de test
 // Nettoyage du code : commentaires, variables non utilisées, réorganisation selon la fonction remplie
 // README.md
 
