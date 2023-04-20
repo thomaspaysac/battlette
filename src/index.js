@@ -30,14 +30,6 @@ const action_info = document.querySelector('.action-info');
 const closeModalButton = document.querySelector('.close-modal_button');
 closeModalButton.addEventListener('click', () => CloseModal('game-over_modal'));
 
-function OpenModal(modal) {
-  const backdrop = document.querySelector('.backdrop');
-  backdrop.style.display = 'block';
-  backdrop.addEventListener('click', () => CloseModal(modal));
-  const modalToOpen = document.querySelector(`.${modal}`);
-  modalToOpen.style.display = 'block';
-}
-
 function CloseModal(modal) {
   const backdrop = document.querySelector('.backdrop');
   backdrop.style.display = 'none';
@@ -115,7 +107,181 @@ start_game_button.addEventListener('click', () => {
   }
 });
 
+
+// Game flow functions
+function StartGame () {
+  // Check if all ships have been placed before launching the game
+  if (player1.gameboard.shipList.length !== 5) {
+    throw new Error('You must still place pastries!');
+  } else {
+    game_start_sound.play();
+    start_game_button.style.display = 'none';
+    start_game_button.disabled = true;
+    start_game_button.style.backgroundColor = 'buttonface';
+    RestoreShipsList();
+    InitializeTurn(currentPlayer);
+  }
+}
+
+function InitializeTurn (currentPlayer) {
+  UpdateInfoDisplay();
+  if (gameMode === 'com') {
+    p1Cells = PopulateP1();
+    p2Cells = PopulateP2();
+    if (currentPlayer === 'player1') {
+      p1Cells = PopulateP1('privateBoard');
+      p2Cells = PopulateP2('publicBoard');
+      ActivateAttackOn(p2Cells, player1, player2);
+    } else {
+      computerAttack(); 
+    }
+  } else {
+    PassTurnModal();
+    document.getElementById('pass-turn_confirm-button').addEventListener('click', () => {
+      CloseModal('pass-turn_modal');
+      if (currentPlayer === 'player1') {
+        p1Cells = PopulateP1('privateBoard');
+        p2Cells = PopulateP2('publicBoard');
+        ActivateAttackOn(p2Cells, player1, player2);
+      } else {
+        p1Cells = PopulateP1('publicBoard');
+        p2Cells = PopulateP2('privateBoard');
+        ActivateAttackOn(p1Cells, player2, player1); 
+      }
+    });
+  }
+}
+
+  // Activate attack on one player board at a time, works for PVP
+function ActivateAttackOn (cellsArr, attacker, defender) {
+  cellsArr.forEach(el => {
+    el.addEventListener('click', (e) => {
+      const targetCell = (el.className.slice(-2)).split('');
+      let attackedShip = defender.gameboard.privateBoard[targetCell[0]][targetCell[1]];
+      attacker.attack(defender, targetCell[0], targetCell[1]);
+      // Reveal square when attacked
+      if (currentPlayer === 'player1') {
+        if (defender.gameboard.privateBoard[targetCell[0]][targetCell[1]] === 'X') {
+          defender.gameboard.publicBoard[targetCell[0]][targetCell[1]] = 'X';
+          if (sunkCheck(player2, attackedShip)) {
+            UpdateShipList('p2', attackedShip);
+          }
+        } else {
+          defender.gameboard.publicBoard[targetCell[0]][targetCell[1]] = '~';
+        }
+        PopulateP2();
+        currentPlayer = 'player2';
+      } else {
+        if (defender.gameboard.privateBoard[targetCell[0]][targetCell[1]] === 'X') {
+          defender.gameboard.publicBoard[targetCell[0]][targetCell[1]] = 'X';
+          if (sunkCheck(player1, attackedShip)) {
+            UpdateShipList('p1', attackedShip);
+          }
+        } else {
+          defender.gameboard.publicBoard[targetCell[0]][targetCell[1]] = '~';
+        }
+        PopulateP1();
+        currentPlayer = 'player1';
+      }
+      if (!winCheck()) {
+        InitializeTurn(currentPlayer);
+      } else {
+        GameOverModal();
+      }
+    });
+  });
+}
+
+  // Computer attack
+function computerAttack () {
+  setTimeout(() => {
+    player2.computerAttack(player1);
+    if (!winCheck()) {
+      currentPlayer = 'player1';
+      InitializeTurn(currentPlayer);
+    } else {
+      GameOverModal();
+    }
+  }, '1000');
+}
+
+  // Check for sunk ship
+function sunkCheck (player, shipName) {
+  const targetShip = player.gameboard.shipList.find(({ name }) => name === shipName);
+  return targetShip.isSunk();
+}
+
+  // Check win condition
+function winCheck () {
+  if (player1.gameboard.getStatus() || player2.gameboard.getStatus()) {
+    return true;
+  }
+}
+
+function UpdateScore (player) {
+  if (player === player1) {
+    playersScores[0]++;
+    document.getElementById('player1-score').textContent = `Score: ${playersScores[0]}`;
+  } else {
+    playersScores[1]++;
+    document.getElementById('player2-score').textContent = `Score: ${playersScores[1]}`;
+  }
+}
+
+
 // DOM manipulation functions
+  // Populate player 1 board
+function PopulateP1 (board = 'privateBoard') {
+  const targetBoard = player1.gameboard[board];
+  player1_board.textContent = '';
+  for (let i = 0; i < 10; i++) {
+    for (let j = 0; j < 10; j++) {
+      let cell = document.createElement('div');
+      cell.textContent = targetBoard[i][j];
+      if (cell.textContent === 'X') {
+        cell.style.backgroundColor = '#c84771';
+        cell.style.color = '#ffffff';
+      } else if (cell.textContent === '~') {
+        cell.style.backgroundColor = 'rgba(192, 186, 188, 0.8)';
+        cell.style.color = '#ffffff';
+      } else if (cell.textContent) {
+        cell.textContent = `▢`;
+        cell.style.backgroundColor = '#ffe98a';
+        cell.style.color = '#782b44';
+      }
+      cell.className = `cell1 ${i}${j}`;
+      player1_board.appendChild(cell);
+    }  
+  }
+  return document.querySelectorAll('.cell1');
+}
+
+  // Populate player 2 (computer) board, using the publicBoard key to keep undiscovered squares empty
+function PopulateP2 (board = 'publicBoard') {
+  const targetBoard = player2.gameboard[board];
+  player2_board.textContent = '';
+  for (let i = 0; i < 10; i++) {
+    for (let j = 0; j < 10; j++) {
+      let cell = document.createElement('div');
+      cell.textContent = targetBoard[i][j];
+      if (cell.textContent === 'X') {
+        cell.style.backgroundColor = '#c84771';
+        cell.style.color = '#ffffff';
+      } else if (cell.textContent === '~') {
+        cell.style.backgroundColor = 'rgba(192, 186, 188, 0.8)';
+        cell.style.color = '#ffffff';
+      } else if (cell.textContent) {
+        cell.textContent = `▢`;
+        cell.style.backgroundColor = '#ffe98a';
+        cell.style.color = '#782b44';
+      }
+      cell.className = `cell2 ${i}${j}`;
+      player2_board.appendChild(cell);
+    }  
+  }
+  return document.querySelectorAll('.cell2');
+}
+
 function resetDOM (player = 'player1') {
   const ship_list = document.querySelectorAll(`#${player}-ships li`);
   const orientation_buttons = document.querySelectorAll(`#${player}-ships img`);
@@ -176,6 +342,8 @@ function InitializeGame(p1name, p2name, mode) {
   p2Cells = PopulateP2('publicBoard');
 }
 
+
+// Placing ships functions
 function ComputerPlaceShips () {
   player2.gameboard.computerPlaceShip(5, 'Carrier');
   player2.gameboard.computerPlaceShip(4, 'Battleship');
@@ -242,7 +410,7 @@ function Player2PlaceShips () {
   p2DestroyerVer.addEventListener('click', () => ActivatePlacement(player2, p2Cells, 2, 'Destroyer', '.p2-destroyer', 'ver'));
 }
 
-// Activate click on own board to place ships
+  // Activate click on own board to place ships
 function ActivatePlacement (player, cellsArr, size, shipName, domElement, orientation = 'hor') {
   placeShipHighlight(player, cellsArr, size, orientation);
   placeShipClick(player, cellsArr, size, shipName, domElement, orientation);
@@ -338,6 +506,10 @@ function placeShipClick (player, cellsArr, size, shipName, domElement, orientati
   });
 }
 
+
+
+
+// Display controller
 function updateStartButton () {
   if (gameMode === 'com' && player1.gameboard.shipList.length === 5) {
     start_game_button.disabled = false;
@@ -354,181 +526,6 @@ function updateStartButton () {
   }
 }
 
-
-
-// Game flow functions
-function StartGame () {
-  // Check if all ships have been placed before launching the game
-  if (player1.gameboard.shipList.length !== 5) {
-    throw new Error('You must still place pastries!');
-  } else {
-    game_start_sound.play();
-    start_game_button.style.display = 'none';
-    start_game_button.disabled = true;
-    start_game_button.style.backgroundColor = 'buttonface';
-    RestoreShipsList();
-    InitializeTurn(currentPlayer);
-  }
-}
-
-function InitializeTurn (currentPlayer) {
-  UpdateInfoDisplay();
-  if (gameMode === 'com') {
-    p1Cells = PopulateP1();
-    p2Cells = PopulateP2();
-    if (currentPlayer === 'player1') {
-      p1Cells = PopulateP1('privateBoard');
-      p2Cells = PopulateP2('publicBoard');
-      ActivateAttackOn(p2Cells, player1, player2);
-    } else {
-      computerAttack(); 
-    }
-  } else {
-    PassTurnModal();
-    document.getElementById('pass-turn_confirm-button').addEventListener('click', () => {
-      CloseModal('pass-turn_modal');
-      if (currentPlayer === 'player1') {
-        p1Cells = PopulateP1('privateBoard');
-        p2Cells = PopulateP2('publicBoard');
-        ActivateAttackOn(p2Cells, player1, player2);
-      } else {
-        p1Cells = PopulateP1('publicBoard');
-        p2Cells = PopulateP2('privateBoard');
-        ActivateAttackOn(p1Cells, player2, player1); 
-      }
-    });
-  }
-}
-
-// Populate player 1 board
-function PopulateP1 (board = 'privateBoard') {
-  const targetBoard = player1.gameboard[board];
-  player1_board.textContent = '';
-  for (let i = 0; i < 10; i++) {
-    for (let j = 0; j < 10; j++) {
-      let cell = document.createElement('div');
-      cell.textContent = targetBoard[i][j];
-      if (cell.textContent === 'X') {
-        cell.style.backgroundColor = '#c84771';
-        cell.style.color = '#ffffff';
-      } else if (cell.textContent === '~') {
-        cell.style.backgroundColor = 'rgba(192, 186, 188, 0.8)';
-        cell.style.color = '#ffffff';
-      } else if (cell.textContent) {
-        cell.textContent = `▢`;
-        cell.style.backgroundColor = '#ffe98a';
-        cell.style.color = '#782b44';
-      }
-      cell.className = `cell1 ${i}${j}`;
-      player1_board.appendChild(cell);
-    }  
-  }
-  return document.querySelectorAll('.cell1');
-}
-
-// Populate player 2 (computer) board, using the publicBoard key to keep undiscovered squares empty
-function PopulateP2 (board = 'publicBoard') {
-  const targetBoard = player2.gameboard[board];
-  player2_board.textContent = '';
-  for (let i = 0; i < 10; i++) {
-    for (let j = 0; j < 10; j++) {
-      let cell = document.createElement('div');
-      cell.textContent = targetBoard[i][j];
-      if (cell.textContent === 'X') {
-        cell.style.backgroundColor = '#c84771';
-        cell.style.color = '#ffffff';
-      } else if (cell.textContent === '~') {
-        cell.style.backgroundColor = 'rgba(192, 186, 188, 0.8)';
-        cell.style.color = '#ffffff';
-      } else if (cell.textContent) {
-        cell.textContent = `▢`;
-        cell.style.backgroundColor = '#ffe98a';
-        cell.style.color = '#782b44';
-      }
-      cell.className = `cell2 ${i}${j}`;
-      player2_board.appendChild(cell);
-    }  
-  }
-  return document.querySelectorAll('.cell2');
-}
-
-// Activate attack on one player board at a time, works for PVP
-function ActivateAttackOn (cellsArr, attacker, defender) {
-  cellsArr.forEach(el => {
-    el.addEventListener('click', (e) => {
-      const targetCell = (el.className.slice(-2)).split('');
-      let attackedShip = defender.gameboard.privateBoard[targetCell[0]][targetCell[1]];
-      attacker.attack(defender, targetCell[0], targetCell[1]);
-      // Reveal square when attacked
-      if (currentPlayer === 'player1') {
-        if (defender.gameboard.privateBoard[targetCell[0]][targetCell[1]] === 'X') {
-          defender.gameboard.publicBoard[targetCell[0]][targetCell[1]] = 'X';
-          if (sunkCheck(player2, attackedShip)) {
-            UpdateShipList('p2', attackedShip);
-          }
-        } else {
-          defender.gameboard.publicBoard[targetCell[0]][targetCell[1]] = '~';
-        }
-        PopulateP2();
-        currentPlayer = 'player2';
-      } else {
-        if (defender.gameboard.privateBoard[targetCell[0]][targetCell[1]] === 'X') {
-          defender.gameboard.publicBoard[targetCell[0]][targetCell[1]] = 'X';
-          if (sunkCheck(player1, attackedShip)) {
-            UpdateShipList('p1', attackedShip);
-          }
-        } else {
-          defender.gameboard.publicBoard[targetCell[0]][targetCell[1]] = '~';
-        }
-        PopulateP1();
-        currentPlayer = 'player1';
-      }
-      if (!winCheck()) {
-        InitializeTurn(currentPlayer);
-      } else {
-        GameOverModal();
-      }
-    });
-  });
-}
-
-// Computer attack
-function computerAttack () {
-  setTimeout(() => {
-    player2.computerAttack(player1);
-    if (!winCheck()) {
-      currentPlayer = 'player1';
-      InitializeTurn(currentPlayer);
-    } else {
-      GameOverModal();
-    }
-  }, '1000');
-}
-
-// Check for sunk ship
-function sunkCheck (player, shipName) {
-  const targetShip = player.gameboard.shipList.find(({ name }) => name === shipName);
-  return targetShip.isSunk();
-}
-
-// Check win condition
-function winCheck () {
-  if (player1.gameboard.getStatus() || player2.gameboard.getStatus()) {
-    return true;
-  }
-}
-
-function UpdateScore (player) {
-  if (player === player1) {
-    playersScores[0]++;
-    document.getElementById('player1-score').textContent = `Score: ${playersScores[0]}`;
-  } else {
-    playersScores[1]++;
-    document.getElementById('player2-score').textContent = `Score: ${playersScores[1]}`;
-  }
-}
-
-// Display controller
 function UpdateInfoDisplay () {
   action_info.textContent = currentPlayer === 'player1' ? `${player1.playerName}'s turn` : `${player2.playerName}'s turn`;
 }
@@ -539,6 +536,7 @@ function UpdateShipList (player, ship) {
   shipListItem.style.color = '#c84771';
   shipListItem.style.textDecoration = 'line-through';
 }
+
 
 // Sound controller
 function soundEffect (src) {
